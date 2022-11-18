@@ -1,6 +1,7 @@
 package it.malda.school.controller;
 
 import it.malda.school.entity.Teacher;
+import it.malda.school.repo.TeacherRepository;
 import it.malda.school.service.TeacherService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -33,5 +34,11 @@ public class TeacherController {
     public String delete(@PathVariable Long id) throws Exception{
         this.teacherService.delete(id);
         return "Deleted Teacher";
+    }
+
+    @PutMapping("/{id}")
+    public Teacher update(@PathVariable Long id, @RequestBody Teacher teacher) throws Exception {
+        teacher.setId(id);
+        return this.teacherService.insert(teacher);
     }
 }
