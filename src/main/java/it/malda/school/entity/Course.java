@@ -1,7 +1,12 @@
 package it.malda.school.entity;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import javax.persistence.*;
 
+@Getter
+@Setter
 @Entity
 @Table(name = "course")
 public class Course {
@@ -15,7 +20,7 @@ public class Course {
     private String name;
 
 
-    @Column(name = "name")
+    @ManyToOne
+    @JoinColumn(name = "teacher_id")
     private Teacher teacher;
-
 }

@@ -1,7 +1,6 @@
 package it.malda.school.controller;
 
 import it.malda.school.entity.Teacher;
-import it.malda.school.repo.TeacherRepository;
 import it.malda.school.service.TeacherService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;

@@ -5,6 +5,7 @@ import it.malda.school.repo.StudentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.Iterator;
+import java.util.Optional;
 
 @Service
 public class StudentService{
@@ -21,7 +22,6 @@ public class StudentService{
     }
 
     public Iterator<Student> getList(int size){
-
         return this.studentRepository.findAll().iterator();
     }
 
@@ -32,5 +32,18 @@ public class StudentService{
 
     public void delete(Long id) throws Exception {
         this.studentRepository.deleteById(id);
+    }
+
+    public Student update(Long id, Student student) throws Exception{
+        if(student.getId() != null && student.getId() != id){
+            throw new Exception("Context path ID is different from student.id in JSON body");
+        }else {
+            Optional<Student> optional = this.studentRepository.findById(id);
+            if (!optional.isPresent()){
+                throw new Exception("No student found with ID " + id);
+            }
+        }
+        student.setId(id);
+        return this.studentRepository.save(student);
     }
 }
