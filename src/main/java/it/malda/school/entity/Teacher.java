@@ -1,7 +1,10 @@
 package it.malda.school.entity;
-
+import lombok.Getter;
+import lombok.Setter;
 import javax.persistence.*;
 
+@Getter
+@Setter
 @Entity(name = "teacher")
 public class Teacher {
 

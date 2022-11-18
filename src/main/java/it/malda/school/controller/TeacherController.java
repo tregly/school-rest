@@ -32,6 +32,6 @@ public class TeacherController {
     @DeleteMapping(path = {"/{id}"})
     public String delete(@PathVariable Long id) throws Exception{
         this.teacherService.delete(id);
-        return "Deleted";
+        return "Deleted Teacher";
     }
 }
