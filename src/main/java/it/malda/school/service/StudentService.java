@@ -1,16 +1,36 @@
 package it.malda.school.service;
 
 import it.malda.school.entity.Student;
-
+import it.malda.school.repo.StudentRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import java.util.Iterator;
 
-public interface StudentService {
+@Service
+public class StudentService{
+    @Autowired
+    private StudentRepository studentRepository;
 
-    Student insert(Student student) throws Exception;
 
-    Iterator<Student> getList(int size)  throws Exception;
+    public Student insert(Student student) throws Exception{
+        if (student == null){
+            throw new Exception("Student should not be null!");
+        }else {
+            return this.studentRepository.save(student);
+        }
+    }
 
-    Student getOne(Long id) throws Exception;
+    public Iterator<Student> getList(int size){
 
-    void delete(Long id) throws Exception;
+        return this.studentRepository.findAll().iterator();
+    }
+
+    public Student getOne(Long id){
+        return this.studentRepository.findById(id).orElse(null);
+    }
+
+
+    public void delete(Long id) throws Exception {
+        this.studentRepository.deleteById(id);
+    }
 }

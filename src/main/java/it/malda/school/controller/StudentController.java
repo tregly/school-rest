@@ -33,6 +33,6 @@ public class StudentController {
     @DeleteMapping(path = {"/{id}"})
     public String delete(@PathVariable Long id) throws Exception{
         this.studentService.delete(id);
-        return "Deleted";
+        return "Deleted Student";
     }
 }
