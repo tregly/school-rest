@@ -38,7 +38,6 @@ public class TeacherController {
 
     @PutMapping("/{id}")
     public Teacher update(@PathVariable Long id, @RequestBody Teacher teacher) throws Exception {
-        teacher.setId(id);
-        return this.teacherService.insert(teacher);
+        return this.teacherService.update(id, teacher);
     }
 }
