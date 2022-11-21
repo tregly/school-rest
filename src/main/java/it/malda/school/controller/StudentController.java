@@ -2,7 +2,6 @@ package it.malda.school.controller;
 
 import it.malda.school.entity.Student;
 import it.malda.school.service.StudentService;
-import org.hibernate.annotations.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -34,5 +33,10 @@ public class StudentController {
     public String delete(@PathVariable Long id) throws Exception{
         this.studentService.delete(id);
         return "Deleted Student";
+    }
+
+    @PutMapping("/{id}")
+    public Student update(@PathVariable Long id, @RequestBody Student student) throws Exception {
+        return this.studentService.update(id, student);
     }
 }

@@ -22,12 +22,10 @@ public class TeacherService{
     }
 
     public Iterator<Teacher> getList(int size){
-
         return this.teacherRepository.findAll().iterator();
     }
 
     public Teacher getOne(Long id){
-
         return this.teacherRepository.findById(id).orElse(null);
     }
 
@@ -44,7 +42,6 @@ public class TeacherService{
                 throw new Exception("No teacher found with ID " + id);
             }
         }
-
         teacher.setId(id);
         return this.teacherRepository.save(teacher);
     }
