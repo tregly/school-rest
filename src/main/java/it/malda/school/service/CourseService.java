@@ -1,12 +1,15 @@
 package it.malda.school.service;
 
 import it.malda.school.entity.Course;
+import it.malda.school.entity.Student;
 import it.malda.school.entity.Teacher;
 import it.malda.school.repo.CourseRepository;
+import it.malda.school.repo.StudentRepository;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import java.util.Iterator;
-import java.util.Optional;
+
+import java.util.*;
 
 @Service
 public class CourseService {
@@ -14,6 +17,9 @@ public class CourseService {
         private CourseRepository courseRepository;
         @Autowired
         private TeacherService teacherService;
+
+        @Autowired
+        private StudentService studentService;
 
         public Course insert(Course course) throws Exception{
             if (course == null){
@@ -27,8 +33,17 @@ public class CourseService {
             return this.courseRepository.save(course);
         }
 
-        public Iterator<Course> getList(int size){
-            return this.courseRepository.findAll().iterator();
+        public List<Course> getList(int size){
+            List<Course> courses = this.courseRepository.findAll();
+            List<Course> coursesResp = new ArrayList<>();
+            courses.forEach(x -> {
+                Course course = new Course();
+                BeanUtils.copyProperties(x,course);
+                Set<Student> students = this.studentService.getStudentsByCourseId(x);
+                course.setStudentRegistration(students);
+                coursesResp.add(course);
+            });
+            return coursesResp;
         }
 
         public Course getOne(Long id){

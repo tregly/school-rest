@@ -5,6 +5,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 
 
 @RequestMapping("api/course")
@@ -15,7 +17,7 @@ public class CourseController {
     private CourseService courseService;
 
     @GetMapping
-    public Iterator<Course> getList(@RequestParam(name = "size", defaultValue = "100") int size) throws Exception{
+    public List<Course> getList(@RequestParam(name = "size", defaultValue = "100") int size) throws Exception{
         return this.courseService.getList(size);
     }
 

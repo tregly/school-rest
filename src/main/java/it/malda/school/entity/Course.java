@@ -2,8 +2,8 @@ package it.malda.school.entity;
 
 import lombok.Getter;
 import lombok.Setter;
-
 import javax.persistence.*;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -19,8 +19,10 @@ public class Course {
     @Column(name = "name")
     private String name;
 
-
     @ManyToOne
     @JoinColumn(name = "teacher_id")
     private Teacher teacher;
+
+    @Transient
+    private Set<Student> studentRegistration;
 }
