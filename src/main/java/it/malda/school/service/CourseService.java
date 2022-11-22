@@ -4,7 +4,6 @@ import it.malda.school.entity.Course;
 import it.malda.school.entity.Student;
 import it.malda.school.entity.Teacher;
 import it.malda.school.repo.CourseRepository;
-import it.malda.school.repo.StudentRepository;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -66,4 +65,8 @@ public class CourseService {
             course.setId(id);
             return this.courseRepository.save(course);
         }
+
+    public List<Course> findCourseListByTeacher(Teacher teacher) {
+        return this.courseRepository.findByTeacherId(teacher.getId());
+    }
 }

@@ -22,6 +22,8 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import java.util.ArrayList;
+
 @ContextConfiguration(classes = {TeacherController.class})
 @ExtendWith(SpringExtension.class)
 class TeacherControllerTest {
@@ -36,7 +38,7 @@ class TeacherControllerTest {
      */
     @Test
     void testGetList() throws Exception {
-        when(teacherService.getList(anyInt())).thenReturn(MappingIterator.emptyIterator());
+        when(teacherService.getList(anyInt())).thenReturn(new ArrayList<>());
         MockHttpServletRequestBuilder getResult = MockMvcRequestBuilders.get("/api/teacher");
         MockHttpServletRequestBuilder requestBuilder = getResult.param("size", String.valueOf(1));
         ResultActions actualPerformResult = MockMvcBuilders.standaloneSetup(teacherController)
@@ -89,7 +91,7 @@ class TeacherControllerTest {
      */
     @Test
     void testInsert() throws Exception {
-        when(teacherService.getList(anyInt())).thenReturn(MappingIterator.emptyIterator());
+        when(teacherService.getList(anyInt())).thenReturn(new ArrayList<>());
 
         Teacher teacher = new Teacher();
         teacher.setId(123L);

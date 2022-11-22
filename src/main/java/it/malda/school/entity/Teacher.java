@@ -11,12 +11,12 @@ public class Teacher {
     @Id
     @Column(name = "id", nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
+    private Long id;
     @Column(name = "name")
-    String name;
+    private String name;
     @Column(name = "surname")
-    String surname;
+    private String surname;
     @Column(name = "subject")
-    String subject;
+    private String subject;
 
 }
