@@ -1,44 +1,101 @@
 package it.malda.school.controller;
+
+import it.malda.school.controller.model.CourseDto;
 import it.malda.school.entity.Course;
+import it.malda.school.entity.Student;
+import it.malda.school.mapper.CourseMapper;
 import it.malda.school.service.CourseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
+import java.util.stream.Collectors;
 
 
 @RequestMapping("api/course")
 @RestController
 public class CourseController {
 
+    public CourseController(CourseService courseService, CourseMapper courseMapper) {
+        this.courseService = courseService;
+        this.courseMapper = courseMapper;
+    }
+
     @Autowired
-    private CourseService courseService;
+    private final CourseService courseService;
+
+    private final CourseMapper courseMapper;
+
 
     @GetMapping
-    public List<Course> getList(@RequestParam(name = "size", defaultValue = "100") int size) throws Exception{
-        return this.courseService.getList(size);
+    public List<CourseDto> getList(@RequestParam(name = "size", defaultValue = "100") int size) throws Exception {
+        List<Course> courses = this.courseService.getList(size);
+        if (courses == null) return null;
+        List<CourseDto> courseDtos = this.courseMapper.toDto(courses);
+        Long count = 0L;
+        courseDtos.forEach(courseDto -> {
+            courseDto.setNumberOfParticipants((long) courses.stream()
+                    .filter(x ->
+                            courseDto.getId() == x.getId()
+                    )
+                    .findFirst()
+                    .get()
+                    .getStudentRegistration()
+                    .size()
+            );
+        });
+
+        return courseDtos;
     }
 
     @GetMapping(path = {"/{id}"})
-    public Course getOne(@PathVariable Long id) throws Exception{
-        return this.courseService.getOne(id);
+    public CourseDto getOne(@PathVariable Long id) throws Exception {
+        Course course = this.courseService.getOne(id);
+        CourseDto courseDto = getCourseDto(course);
+        if (courseDto == null) return null;
+        return courseDto;
     }
 
     @PostMapping
-    public Course insert(@RequestBody Course course) throws Exception {
-        return this.courseService.insert(course);
+    public CourseDto insert(@RequestBody CourseDto course) throws Exception {
+        return this.courseMapper.toDto(this.courseService.insert(this.courseMapper.toEntity(course)));
     }
 
     @DeleteMapping(path = {"/{id}"})
-    public String delete(@PathVariable Long id) throws Exception{
+    public String delete(@PathVariable Long id) throws Exception {
         this.courseService.delete(id);
         return "Deleted Course";
     }
 
     @PutMapping("/{id}")
-    public Course update(@PathVariable Long id, @RequestBody Course course) throws Exception {
-        return this.courseService.update(id, course);
+    public CourseDto update(@PathVariable Long id, @RequestBody CourseDto course) throws Exception {
+        return this.courseMapper.toDto(this.courseService.update(id, this.courseMapper.toEntity(course)));
     }
+
+    @PatchMapping("/{id}/assign-teacher/{idTeacher}")
+    public CourseDto assignTeacher(@PathVariable Long id, @PathVariable Long idTeacher) throws Exception {
+        Course course = this.courseService.assignTeacher(id, idTeacher);
+        CourseDto courseDto = getCourseDto(course);
+        if (courseDto == null) return null;
+        return courseDto;
+    }
+
+    @PatchMapping("/{id}/assign-student/{idStudent}")
+    public CourseDto assignStudent(@PathVariable Long id, @PathVariable Long idStudent) throws Exception {
+        Course course = this.courseService.assignStudent(id, idStudent);
+        CourseDto courseDto = getCourseDto(course);
+        if (courseDto == null) return null;
+        return courseDto;
+    }
+
+
+    private CourseDto getCourseDto(Course course) {
+        if (course == null) return null;
+        CourseDto courseDto = this.courseMapper.toDto(course);
+        List<String> student = course.getStudentRegistration().stream().map(Student::getFullName).collect(Collectors.toList());
+        courseDto.setParticipants(student);
+        return courseDto;
+    }
+
+
 }

@@ -9,39 +9,39 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class TeacherService{
+public class TeacherService {
     @Autowired
     private TeacherRepository teacherRepository;
 
 
-    public Teacher insert(Teacher teacher) throws Exception{
-        if (teacher == null){
+    public Teacher insert(Teacher teacher) throws Exception {
+        if (teacher == null) {
             throw new Exception("Teacher should not be null!");
-        }else {
+        } else {
             return this.teacherRepository.save(teacher);
         }
     }
 
-    public List<Teacher> getList(int size){
+    public List<Teacher> getList(int size) {
         return this.teacherRepository.findAll();
     }
 
-    public Teacher getOne(Long id){
+    public Teacher getOne(Long id) {
         Optional<Teacher> optional = this.teacherRepository.findById(id);
-        if(!optional.isPresent()) return null;
+        if (!optional.isPresent()) return null;
         return optional.get();
     }
 
     public void delete(Long id) throws Exception {
-       this.teacherRepository.deleteById(id);
+        this.teacherRepository.deleteById(id);
     }
 
-    public Teacher update(Long id, Teacher teacher) throws Exception{
-        if(teacher.getId() != null && teacher.getId() != id){
+    public Teacher update(Long id, Teacher teacher) throws Exception {
+        if (teacher.getId() != null && teacher.getId() != id) {
             throw new Exception("Context path ID is different from teacher.id in JSON body");
-        }else {
+        } else {
             Optional<Teacher> optional = this.teacherRepository.findById(id);
-            if (!optional.isPresent()){
+            if (!optional.isPresent()) {
                 throw new Exception("No teacher found with ID " + id);
             }
         }

@@ -36,4 +36,8 @@ public class Student {
             inverseJoinColumns = @JoinColumn(name = "course_id")
     )
     private Set<Course> coursesRegistration;
+
+    public String getFullName() {
+        return this.getName() + this.getSurname().replace(this.getName(), "");
+    }
 }

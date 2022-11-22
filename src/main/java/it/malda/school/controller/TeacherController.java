@@ -9,9 +9,7 @@ import it.malda.school.service.TeacherService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @RequestMapping("api/teacher")
@@ -24,20 +22,21 @@ public class TeacherController {
 
     private final TeacherService teacherService;
 
-    private final  TeacherMapper teacherMapper;
+    private final TeacherMapper teacherMapper;
 
     @Autowired
     private CourseService courseService;
 
     @GetMapping
-    public List<TeacherDto> getList(@RequestParam(name = "size", defaultValue = "100") int size) throws Exception{
+    public List<TeacherDto> getList(@RequestParam(name = "size", defaultValue = "100") int size) throws Exception {
+
         return teacherMapper.toDto(this.teacherService.getList(size));
     }
 
     @GetMapping(path = {"/{id}"})
-    public TeacherDto getOne(@PathVariable Long id) throws Exception{
+    public TeacherDto getOne(@PathVariable Long id) throws Exception {
         Teacher teacher = this.teacherService.getOne(id);
-        if(teacher == null) return null;
+        if (teacher == null) return null;
         List<Course> course = this.courseService.findCourseListByTeacher(teacher);
         TeacherDto teacherDto = this.teacherMapper.toDto(teacher);
         teacherDto.setCousers(course.stream().map(Course::getName).collect(Collectors.toList()));
@@ -52,7 +51,7 @@ public class TeacherController {
     }
 
     @DeleteMapping(path = {"/{id}"})
-    public String delete(@PathVariable Long id) throws Exception{
+    public String delete(@PathVariable Long id) throws Exception {
         this.teacherService.delete(id);
         return "Deleted Teacher";
     }

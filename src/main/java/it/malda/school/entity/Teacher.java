@@ -1,6 +1,8 @@
 package it.malda.school.entity;
+
 import lombok.Getter;
 import lombok.Setter;
+
 import javax.persistence.*;
 
 @Getter
@@ -19,4 +21,7 @@ public class Teacher {
     @Column(name = "subject")
     private String subject;
 
+    public String getFullName() {
+        return this.getName() + " " + this.getSurname().replace(this.getName(), "");
+    }
 }

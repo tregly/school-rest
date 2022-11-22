@@ -2,6 +2,7 @@ package it.malda.school.entity;
 
 import lombok.Getter;
 import lombok.Setter;
+
 import javax.persistence.*;
 import java.util.Set;
 
@@ -20,9 +21,12 @@ public class Course {
     private String name;
 
     @ManyToOne
-    @JoinColumn(name = "teacher_id")
+    @JoinColumn(name = "teacher_id", nullable = true)
     private Teacher teacher;
 
     @Transient
     private Set<Student> studentRegistration;
+
+    @Column(name = "max_participants", columnDefinition = "default 25")
+    private Long maxParticipants;
 }
