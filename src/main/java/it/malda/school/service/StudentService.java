@@ -5,7 +5,9 @@ import it.malda.school.entity.Student;
 import it.malda.school.repo.StudentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import java.util.Iterator;
+
+import javax.transaction.Transactional;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -15,6 +17,7 @@ public class StudentService{
     private StudentRepository studentRepository;
 
 
+    @Transactional
     public Student insert(Student student) throws Exception{
         if (student == null){
             throw new Exception("Student should not be null!");
@@ -22,20 +25,22 @@ public class StudentService{
             return this.studentRepository.save(student);
         }
     }
-
-    public Iterator<Student> getList(int size){
-        return this.studentRepository.findAll().iterator();
+    @Transactional
+    public List<Student> getList(int size){
+        return this.studentRepository.findAll();
     }
 
+    @Transactional
     public Student getOne(Long id){
         return this.studentRepository.findById(id).orElse(null);
     }
 
-
+    @Transactional
     public void delete(Long id) throws Exception {
         this.studentRepository.deleteById(id);
     }
 
+    @Transactional
     public Student update(Long id, Student student) throws Exception{
         if(student.getId() != null && student.getId() != id){
             throw new Exception("Context path ID is different from student.id in JSON body");
@@ -49,7 +54,9 @@ public class StudentService{
         return this.studentRepository.save(student);
     }
 
+    @Transactional
     public Set<Student> getStudentsByCourseId(Course course) {
          return this.studentRepository.findByCoursesRegistrationId(course.getId());
     }
+
 }

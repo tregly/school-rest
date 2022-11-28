@@ -75,6 +75,9 @@ public class CourseService {
                 throw new Exception("No teacher found with ID " + id);
             }
         }
+        if (course.getStudentRegistration().size() > course.getMaxParticipants()){
+            throw new Exception("the maximum number of participants is " + course.getMaxParticipants());
+        }
         course.setId(id);
         return this.courseRepository.save(course);
     }
@@ -96,13 +99,37 @@ public class CourseService {
     }
 
     @Transactional
+    public void unassignTeacher(Long id, Long idTeacher) throws Exception {
+        Course course = this.getOne(id);
+        if (course == null) throw new Exception(String.format("Course with ID [%d]", id));
+        Teacher teacher = this.teacherService.getOne(idTeacher);
+        if (teacher == null) throw new Exception(String.format("Student with ID [%d]", idTeacher));
+        course.getStudentRegistration().remove(teacher);
+    }
+
+
+    @Transactional
     public Course assignStudent(Long id, Long idStudent) throws Exception {
         Course course = this.getOne(id);
         if (course == null) throw new Exception(String.format("Course with ID [%d]", id));
         Student student = this.studentService.getOne(idStudent);
+        if (course.getStudentRegistration().size() >= course.getMaxParticipants()){
+            throw new Exception("the maximum number of participants is " + course.getMaxParticipants());
+        }
         if (student == null) throw new Exception(String.format("Student with ID [%d]", idStudent));
         student.getCoursesRegistration().add(course);
         course.getStudentRegistration().add(student);
         return course;
     }
+    @Transactional
+    public void unassignStudent(Long id, Long idStudent) throws Exception {
+        Course course = this.getOne(id);
+        if (course == null) throw new Exception(String.format("Course with ID [%d]", id));
+        Student student = this.studentService.getOne(idStudent);
+        if (student == null) throw new Exception(String.format("Student with ID [%d]", idStudent));
+        course.getStudentRegistration().remove(student);
+        student.getCoursesRegistration().remove(course);
+    }
+
+
 }

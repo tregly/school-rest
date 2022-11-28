@@ -19,7 +19,7 @@ public class TeacherController {
         this.teacherService = teacherService;
         this.teacherMapper = teacherMapper;
     }
-
+    @Autowired
     private final TeacherService teacherService;
 
     private final TeacherMapper teacherMapper;
@@ -29,7 +29,6 @@ public class TeacherController {
 
     @GetMapping
     public List<TeacherDto> getList(@RequestParam(name = "size", defaultValue = "100") int size) throws Exception {
-
         return teacherMapper.toDto(this.teacherService.getList(size));
     }
 

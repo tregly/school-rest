@@ -80,12 +80,24 @@ public class CourseController {
         return courseDto;
     }
 
+    @PatchMapping("/{id}/unassign-teacher/{idStudent}")
+    public String unassignTeacher(@PathVariable Long id, @PathVariable Long idTeacher) throws Exception {
+        this.courseService.unassignTeacher(id, idTeacher);
+        return "Deleted Teacher with " + idTeacher + " ID.";
+    }
+
     @PatchMapping("/{id}/assign-student/{idStudent}")
     public CourseDto assignStudent(@PathVariable Long id, @PathVariable Long idStudent) throws Exception {
         Course course = this.courseService.assignStudent(id, idStudent);
         CourseDto courseDto = getCourseDto(course);
         if (courseDto == null) return null;
         return courseDto;
+    }
+
+    @PatchMapping("/{id}/unassign-student/{idStudent}")
+    public String unassignStudent(@PathVariable Long id, @PathVariable Long idStudent) throws Exception {
+        this.courseService.unassignStudent(id, idStudent);
+        return "Deleted Student with " + idStudent + " ID.";
     }
 
 
