@@ -3,6 +3,7 @@ package it.malda.school.controller;
 import it.malda.school.controller.model.CourseDto;
 import it.malda.school.entity.Course;
 import it.malda.school.entity.Student;
+import it.malda.school.exception.InvalidInputException;
 import it.malda.school.mapper.CourseMapper;
 import it.malda.school.service.CourseService;
 import it.malda.school.service.StudentService;
@@ -17,8 +18,9 @@ import java.util.stream.Collectors;
 @RestController
 public class CourseController {
 
-    public CourseController(CourseService courseService, CourseMapper courseMapper) {
+    public CourseController(CourseService courseService, StudentService studentService, CourseMapper courseMapper) {
         this.courseService = courseService;
+        this.studentService = studentService;
         this.courseMapper = courseMapper;
     }
 
@@ -26,7 +28,7 @@ public class CourseController {
     private final CourseService courseService;
 
     @Autowired
-    private StudentService studentService;
+    private final StudentService studentService;
 
     private final CourseMapper courseMapper;
 
@@ -54,10 +56,7 @@ public class CourseController {
 
     @GetMapping(path = {"/{id}"})
     public CourseDto getOne(@PathVariable Long id) throws Exception {
-        Course course = this.courseService.getOne(id);
-        CourseDto courseDto = getCourseDto(course);
-        if (courseDto == null) return null;
-        return courseDto;
+        return getCourseDto(this.courseService.getOne(id));
     }
 
     @PostMapping
@@ -72,43 +71,36 @@ public class CourseController {
     }
 
     @PutMapping("/{id}")
-    public CourseDto update(@PathVariable Long id, @RequestBody CourseDto course) throws Exception {
+    public CourseDto update(@PathVariable Long id, @RequestBody CourseDto course) {
         return this.courseMapper.toDto(this.courseService.update(id, this.courseMapper.toEntity(course)));
     }
 
     @PatchMapping("/{id}/assign-teacher/{idTeacher}")
-    public CourseDto assignTeacher(@PathVariable Long id, @PathVariable Long idTeacher) throws Exception {
-        Course course = this.courseService.assignTeacher(id, idTeacher);
-        CourseDto courseDto = getCourseDto(course);
-        if (courseDto == null) return null;
-        return courseDto;
+    public CourseDto assignTeacher(@PathVariable Long id, @PathVariable Long idTeacher) {
+        return getCourseDto(this.courseService.assignTeacher(id, idTeacher));
     }
 
-    @PatchMapping("/{id}/unassign-teacher/{idStudent}")
-    public String unassignTeacher(@PathVariable Long id, @PathVariable Long idTeacher) throws Exception {
-        this.courseService.unassignTeacher(id, idTeacher);
-        return "Deleted Teacher with " + idTeacher + " ID.";
+    @PatchMapping("/{id}/unassign-teacher")
+    public CourseDto unassignTeacher(@PathVariable Long id) {
+        return getCourseDto(this.courseService.unassignedTeacher(id));
     }
 
     @PatchMapping("/{id}/assign-student/{idStudent}")
-    public CourseDto assignStudent(@PathVariable Long id, @PathVariable Long idStudent) throws Exception {
-        Course course = this.courseService.assignStudent(id, idStudent);
-        CourseDto courseDto = getCourseDto(course);
-        if (courseDto == null) return null;
-        return courseDto;
+    public CourseDto assignStudent(@PathVariable Long id, @PathVariable Long idStudent) {
+        return getCourseDto(this.courseService.assignStudent(id, idStudent));
     }
 
     @PatchMapping("/{id}/unassign-student/{idStudent}")
-    public String unassignStudent(@PathVariable Long id, @PathVariable Long idStudent) throws Exception {
-        this.courseService.unassignStudent(id, idStudent);
-        return "Deleted Student with " + idStudent + " ID.";
+    public CourseDto unassignStudent(@PathVariable Long id, @PathVariable Long idStudent) {
+        return getCourseDto(this.courseService.unassignedStudent(id, idStudent));
     }
 
+
     @PatchMapping("/{id}/max-participants/{limit}")
-    public String modifyMaxParticipants(@PathVariable Long id, @PathVariable Long limit) throws Exception{
+    public String modifyMaxParticipants(@PathVariable Long id, @PathVariable Long limit) {
         Long participantsNumber = this.studentService.countStudentByCourse(id);
         if (participantsNumber > limit) {
-            throw new Exception("Students registration have already exceeded the limit");
+            throw new InvalidInputException("Students registration have already exceeded the limit");
         }
         this.courseService.modifyMaxParticipants(id, limit);
         return "Max Participants is changed to " + limit;

@@ -30,11 +30,7 @@ public class Student {
     private String phoneNumber;
 
     @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(
-            name = "courses_students",
-            joinColumns = {@JoinColumn(name = "student_id")},
-            inverseJoinColumns = @JoinColumn(name = "course_id")
-    )
+    @JoinTable(name = "courses_students", joinColumns = {@JoinColumn(name = "student_id")}, inverseJoinColumns = @JoinColumn(name = "course_id"))
     private Set<Course> coursesRegistration;
 
     public String getFullName() {

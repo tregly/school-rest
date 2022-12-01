@@ -3,7 +3,6 @@ package it.malda.school.controller;
 import it.malda.school.controller.model.TeacherDto;
 import it.malda.school.entity.Course;
 import it.malda.school.entity.Teacher;
-import it.malda.school.exception.EntityNotFoundException;
 import it.malda.school.mapper.TeacherMapper;
 import it.malda.school.service.CourseService;
 import it.malda.school.service.TeacherService;
@@ -20,6 +19,7 @@ public class TeacherController {
         this.teacherService = teacherService;
         this.teacherMapper = teacherMapper;
     }
+
     @Autowired
     private final TeacherService teacherService;
 
@@ -36,7 +36,6 @@ public class TeacherController {
     @GetMapping(path = {"/{id}"})
     public TeacherDto getOne(@PathVariable Long id) throws Exception {
         Teacher teacher = this.teacherService.getOne(id);
-        if (teacher == null) throw new EntityNotFoundException(String.format("Teacher not found whit id [%d]", id));
         List<Course> course = this.courseService.findCourseListByTeacher(teacher);
         TeacherDto teacherDto = this.teacherMapper.toDto(teacher);
         teacherDto.setCousers(course.stream().map(Course::getName).collect(Collectors.toList()));
@@ -57,9 +56,12 @@ public class TeacherController {
     }
 
     @PutMapping("/{id}")
-    public TeacherDto update(@PathVariable Long id, @RequestBody TeacherDto teacher) throws Exception {
+    public TeacherDto update(@PathVariable Long id, @RequestBody TeacherDto teacher) {
         Teacher entity = this.teacherMapper.toEntity(teacher);
+        List<Course> course = this.courseService.findCourseListByTeacher(entity);
         TeacherDto teacherDto = this.teacherMapper.toDto(this.teacherService.update(id, entity));
+        //Nell'update è possibile modificare tutto tranne i corsi collegati, è possibile farlo tramite chiamate da Course
+        teacherDto.setCousers(course.stream().map(Course::getName).collect(Collectors.toList()));
         return teacherDto;
     }
 }
