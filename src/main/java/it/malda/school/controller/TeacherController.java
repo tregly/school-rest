@@ -3,6 +3,7 @@ package it.malda.school.controller;
 import it.malda.school.controller.model.TeacherDto;
 import it.malda.school.entity.Course;
 import it.malda.school.entity.Teacher;
+import it.malda.school.exception.EntityNotFoundException;
 import it.malda.school.mapper.TeacherMapper;
 import it.malda.school.service.CourseService;
 import it.malda.school.service.TeacherService;
@@ -35,7 +36,7 @@ public class TeacherController {
     @GetMapping(path = {"/{id}"})
     public TeacherDto getOne(@PathVariable Long id) throws Exception {
         Teacher teacher = this.teacherService.getOne(id);
-        if (teacher == null) return null;
+        if (teacher == null) throw new EntityNotFoundException(String.format("Teacher not found whit id [%d]", id));
         List<Course> course = this.courseService.findCourseListByTeacher(teacher);
         TeacherDto teacherDto = this.teacherMapper.toDto(teacher);
         teacherDto.setCousers(course.stream().map(Course::getName).collect(Collectors.toList()));
