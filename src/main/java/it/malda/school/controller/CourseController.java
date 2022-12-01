@@ -5,6 +5,7 @@ import it.malda.school.entity.Course;
 import it.malda.school.entity.Student;
 import it.malda.school.mapper.CourseMapper;
 import it.malda.school.service.CourseService;
+import it.malda.school.service.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,6 +24,9 @@ public class CourseController {
 
     @Autowired
     private final CourseService courseService;
+
+    @Autowired
+    private StudentService studentService;
 
     private final CourseMapper courseMapper;
 
@@ -98,6 +102,16 @@ public class CourseController {
     public String unassignStudent(@PathVariable Long id, @PathVariable Long idStudent) throws Exception {
         this.courseService.unassignStudent(id, idStudent);
         return "Deleted Student with " + idStudent + " ID.";
+    }
+
+    @PatchMapping("/{id}/max-participants/{limit}")
+    public String modifyMaxParticipants(@PathVariable Long id, @PathVariable Long limit) throws Exception{
+        Long participantsNumber = this.studentService.countStudentByCourse(id);
+        if (participantsNumber > limit) {
+            throw new Exception("Students registration have already exceeded the limit");
+        }
+        this.courseService.modifyMaxParticipants(id, limit);
+        return "Max Participants is changed to " + limit;
     }
 
 

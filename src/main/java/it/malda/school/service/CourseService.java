@@ -76,7 +76,7 @@ public class CourseService {
             }
         }
         if (course.getStudentRegistration().size() > course.getMaxParticipants()){
-            throw new Exception("the maximum number of participants is " + course.getMaxParticipants());
+            throw new Exception("The maximum number of participants is " + course.getMaxParticipants());
         }
         course.setId(id);
         return this.courseRepository.save(course);
@@ -94,8 +94,7 @@ public class CourseService {
         Teacher teacher = this.teacherService.getOne(idTeacher);
         if (teacher == null) throw new Exception(String.format("Teacher with ID [%d]", idTeacher));
         course.setTeacher(teacher);
-        Course saved = this.courseRepository.save(course);
-        return saved;
+        return this.courseRepository.save(course);
     }
 
     @Transactional
@@ -105,6 +104,11 @@ public class CourseService {
         Teacher teacher = this.teacherService.getOne(idTeacher);
         if (teacher == null) throw new Exception(String.format("Student with ID [%d]", idTeacher));
         course.getStudentRegistration().remove(teacher);
+    }
+
+    @Transactional
+    public void modifyMaxParticipants(Long id, Long limit) {
+        this.courseRepository.modifyMaxParticipants(id,limit);
     }
 
 
@@ -130,6 +134,7 @@ public class CourseService {
         course.getStudentRegistration().remove(student);
         student.getCoursesRegistration().remove(course);
     }
+
 
 
 }

@@ -2,6 +2,7 @@ package it.malda.school.service;
 
 import it.malda.school.entity.Course;
 import it.malda.school.entity.Student;
+import it.malda.school.repo.CourseRepository;
 import it.malda.school.repo.StudentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,6 +16,7 @@ import java.util.Set;
 public class StudentService{
     @Autowired
     private StudentRepository studentRepository;
+
 
 
     @Transactional
@@ -59,4 +61,18 @@ public class StudentService{
          return this.studentRepository.findByCoursesRegistrationId(course.getId());
     }
 
+    @Transactional
+    public Long countStudentByCourse(Long id) throws Exception {
+        return this.studentRepository.countByCoursesRegistrationId(id);
+    }
+
+
+        /*Course course = this.courseService.getOne(id);
+        Long participants = this.studentRepository.countByCourseId(id);
+        if (course == null) throw new Exception(String.format("Course with ID [%d] is null", id));
+        if (participants >= count) {
+            throw new Exception("Students registration have already exceeded the limit");
+        }else{
+            course.setMaxParticipants(count);
+        }*/
 }
