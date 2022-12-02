@@ -82,7 +82,7 @@ public class CourseService {
         if (course.getId()!=null&&!course.getId().equals(id)) {
             throw new InvalidInputException("Context path ID is different from course.id in JSON body");
         }
-        if (this.studentService.countStudentByCourse(id) > course.getMaxParticipants()) {
+        if (this.studentService.countStudentByCourse(id) >= course.getMaxParticipants()) {
             throw new InvalidInputException("The maximum number of participants is " + course.getMaxParticipants());
         }
         course.setId(id);
@@ -125,7 +125,7 @@ public class CourseService {
     public Course assignStudent(Long id, Long idStudent) {
         Course course = this.getOne(id);
         Student student = this.studentService.getOne(idStudent);
-        if (course.getStudentRegistration().size() > course.getMaxParticipants()) {
+        if (this.studentService.countStudentByCourse(id) >= course.getMaxParticipants()) {
             throw new InvalidInputException("The maximum number of participants is " + course.getMaxParticipants());
         }
         student.getCoursesRegistration().add(course);
