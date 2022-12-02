@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -74,18 +75,20 @@ public class CourseService {
 
     @Transactional
     public Course update(Long id, Course course) {
-        this.courseRepository
+        Course oldCourse = this.courseRepository
                 .findById(id)
                 .orElseThrow(() ->
                         new EntityNotFoundException(String.format("Course not found with id [%d]", id)));
-        if (course.getId() != id) {
+        if (course.getId()!=null&&!course.getId().equals(id)) {
             throw new InvalidInputException("Context path ID is different from course.id in JSON body");
         }
-        if (course.getStudentRegistration().size() > course.getMaxParticipants()) {
+        if (this.studentService.countStudentByCourse(id) > course.getMaxParticipants()) {
             throw new InvalidInputException("The maximum number of participants is " + course.getMaxParticipants());
         }
         course.setId(id);
-        return this.courseRepository.save(course);
+        course.setTeacher(oldCourse.getTeacher());
+        this.courseRepository.save(course);
+        return this.getOne(id);
     }
 
     @Transactional

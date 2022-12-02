@@ -72,7 +72,7 @@ public class CourseController {
 
     @PutMapping("/{id}")
     public CourseDto update(@PathVariable Long id, @RequestBody CourseDto course) {
-        return this.courseMapper.toDto(this.courseService.update(id, this.courseMapper.toEntity(course)));
+        return getCourseDto(this.courseService.update(id, this.courseMapper.toEntity(course)));
     }
 
     @PatchMapping("/{id}/assign-teacher/{idTeacher}")
@@ -112,6 +112,7 @@ public class CourseController {
         CourseDto courseDto = this.courseMapper.toDto(course);
         List<String> student = course.getStudentRegistration().stream().map(Student::getFullName).collect(Collectors.toList());
         courseDto.setParticipants(student);
+        courseDto.setNumberOfParticipants((student!=null)?Long.valueOf(student.size()):0);
         return courseDto;
     }
 
