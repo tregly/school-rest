@@ -3,7 +3,9 @@ package it.malda.school.entity;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
 
+@SpringBootTest
 class StudentTest {
     /**
      * Methods under test:
@@ -35,6 +37,8 @@ class StudentTest {
         assertEquals("Name", actualStudent.getName());
         assertEquals("4105551212", actualStudent.getPhoneNumber());
         assertEquals("Doe", actualStudent.getSurname());
+        assertEquals("NameDoe", actualStudent.getFullName());
     }
-}
 
+
+}
