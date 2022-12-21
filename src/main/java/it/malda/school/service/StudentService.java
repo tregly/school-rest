@@ -65,7 +65,7 @@ public class StudentService {
     }
 
     @Transactional
-    public Set<Student> getStudentsByCourseId(Course course) {
+    public Set<Student> getStudentsByCourse(Course course) {
         return this.studentRepository.findByCoursesRegistrationId(course.getId());
     }
 
