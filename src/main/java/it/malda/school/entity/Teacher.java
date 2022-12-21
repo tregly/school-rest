@@ -11,7 +11,8 @@ import javax.persistence.*;
 @Setter
 @SuperBuilder(toBuilder=true)
 @NoArgsConstructor
-@Entity(name = "teacher")
+@Entity
+@Table(name = "teacher")
 public class Teacher {
 
     @Id

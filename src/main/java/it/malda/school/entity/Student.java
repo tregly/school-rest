@@ -12,7 +12,8 @@ import java.util.Set;
 @Setter
 @SuperBuilder(toBuilder=true)
 @NoArgsConstructor
-@Entity(name = "student")
+@Entity
+@Table(name = "student")
 public class Student {
 
     @Id

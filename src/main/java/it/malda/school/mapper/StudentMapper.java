@@ -23,9 +23,7 @@ public interface StudentMapper extends BaseMapper<StudentDto, Student> {
             return null;
         }
         Set<String> response = new HashSet<>();
-        courses.forEach(course -> {
-            response.add(course.getName());
-        });
+        courses.forEach(course -> response.add(course.getName()));
         return response;
     }
 }

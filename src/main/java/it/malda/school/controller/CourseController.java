@@ -30,6 +30,7 @@ public class CourseController {
     @Autowired
     private final StudentService studentService;
 
+
     private final CourseMapper courseMapper;
 
 
@@ -112,7 +113,7 @@ public class CourseController {
         CourseDto courseDto = this.courseMapper.toDto(course);
         List<String> student = course.getStudentRegistration().stream().map(Student::getFullName).collect(Collectors.toList());
         courseDto.setParticipants(student);
-        courseDto.setNumberOfParticipants((student!=null)?Long.valueOf(student.size()):0);
+        courseDto.setNumberOfParticipants((long) student.size());
         return courseDto;
     }
 

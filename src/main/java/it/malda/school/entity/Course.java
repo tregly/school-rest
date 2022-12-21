@@ -12,7 +12,8 @@ import java.util.Set;
 @Setter
 @SuperBuilder(toBuilder=true)
 @NoArgsConstructor
-@Entity(name = "course")
+@Entity
+@Table(name = "course")
 public class Course {
 
     @Id
@@ -33,3 +34,4 @@ public class Course {
     @Column(name = "max_participants", columnDefinition = "default 25")
     private Long maxParticipants;
 }
+

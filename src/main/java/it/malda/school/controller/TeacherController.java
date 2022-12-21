@@ -15,13 +15,16 @@ import java.util.stream.Collectors;
 @RequestMapping("api/teacher")
 @RestController
 public class TeacherController {
-    public TeacherController(TeacherService teacherService, TeacherMapper teacherMapper) {
+
+    public TeacherController(TeacherService teacherService, TeacherMapper teacherMapper, CourseService courseService) {
         this.teacherService = teacherService;
         this.teacherMapper = teacherMapper;
+        this.courseService = courseService;
     }
 
     @Autowired
     private final TeacherService teacherService;
+
 
     private final TeacherMapper teacherMapper;
 
