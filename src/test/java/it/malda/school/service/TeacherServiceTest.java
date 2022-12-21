@@ -1,26 +1,32 @@
 package it.malda.school.service;
 
-import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import it.malda.school.entity.Course;
+import it.malda.school.entity.Student;
 import it.malda.school.entity.Teacher;
+import it.malda.school.exception.ForbiddenInputException;
+import it.malda.school.exception.InvalidInputException;
 import it.malda.school.repo.TeacherRepository;
 
 import java.util.ArrayList;
 import java.util.Optional;
+import java.util.Set;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 @ContextConfiguration(classes = {TeacherService.class})
-@ExtendWith(SpringExtension.class)
+@SpringBootTest
 class TeacherServiceTest {
     @MockBean
     private TeacherRepository teacherRepository;
@@ -33,25 +39,30 @@ class TeacherServiceTest {
      */
     @Test
     void testInsert() throws Exception {
-        Teacher teacher = new Teacher();
-        teacher.setId(123L);
-        teacher.setName("Name");
-        teacher.setSubject("Hello from the Dreaming Spires");
-        teacher.setSurname("Doe");
+        Teacher teacher = Teacher.builder()
+                .id(123L)
+                .name("Laura")
+                .surname("Biagiotti")
+                .subject("Scienze")
+                .build();
         when(teacherRepository.save((Teacher) any())).thenReturn(teacher);
-
-        Teacher teacher1 = new Teacher();
-        teacher1.setId(123L);
-        teacher1.setName("Name");
-        teacher1.setSubject("Hello from the Dreaming Spires");
-        teacher1.setSurname("Doe");
-        assertSame(teacher, teacherService.insert(teacher1));
+        Teacher saved = teacherService.insert(teacher);
         verify(teacherRepository).save((Teacher) any());
+        assertSame(teacher, saved);
     }
 
-    /**
-     * Method under test: {@link TeacherService#getList(int)}
-     */
+    @Test
+    void testInsert_ForbiddenInputException() {
+        Teacher teacher = Teacher.builder()
+                .id(123L)
+                .name("")
+                .surname(null)
+                .subject("Scienze")
+                .build();
+        Throwable exception = assertThrows(ForbiddenInputException.class, () -> teacherService.insert(teacher));
+        assertEquals("Teacher should not be null!", exception.getMessage());
+    }
+
     @Test
     void testGetList() {
         when(teacherRepository.findAll()).thenReturn(new ArrayList<>());
@@ -59,30 +70,57 @@ class TeacherServiceTest {
         verify(teacherRepository).findAll();
     }
 
-    /**
-     * Method under test: {@link TeacherService#getOne(Long)}
-     */
     @Test
     void testGetOne() {
-        Teacher teacher = new Teacher();
-        teacher.setId(123L);
-        teacher.setName("Name");
-        teacher.setSubject("Hello from the Dreaming Spires");
-        teacher.setSurname("Doe");
-        Optional<Teacher> ofResult = Optional.of(teacher);
-        when(teacherRepository.findById((Long) any())).thenReturn(ofResult);
+        Teacher teacher = Teacher.builder()
+                .id(123L)
+                .name("Laura")
+                .surname("Biagiotti")
+                .subject("Scienze")
+                .build();
+        when(teacherRepository.findById((Long) any())).thenReturn(Optional.of(teacher));
         assertSame(teacher, teacherService.getOne(123L));
         verify(teacherRepository).findById((Long) any());
     }
 
-    /**
-     * Method under test: {@link TeacherService#delete(Long)}
-     */
     @Test
     void testDelete() throws Exception {
         doNothing().when(teacherRepository).deleteById((Long) any());
         teacherService.delete(123L);
         verify(teacherRepository).deleteById((Long) any());
+    }
+
+    @Test
+    void testUpdate(){
+        Teacher teacherOld = Teacher.builder()
+                .id(123L)
+                .name("Laura")
+                .surname("Biagiotti")
+                .subject("Scienze")
+                .build();
+
+        Teacher teacherNew = Teacher.builder()
+                .id(123L)
+                .name("Lau")
+                .surname("Biagio")
+                .subject("Musica")
+                .build();
+        when(teacherRepository.findById((Long) any())).thenReturn(Optional.of(teacherOld));
+        when(teacherRepository.save((Teacher) any())).thenReturn(teacherNew);
+        Teacher update = teacherService.update(123L, teacherNew);
+        assertSame(teacherNew.getId(), update.getId());
+    }
+
+    @Test
+    void testUpdate_InvalidInputException() {
+        Teacher teacher = Teacher.builder()
+                .id(123L)
+                .name("")
+                .surname(null)
+                .subject("Scienze")
+                .build();
+        Throwable exception = assertThrows(InvalidInputException.class, () -> teacherService.update(1L, teacher));
+        assertEquals("Context path ID is different from teacher.id in JSON body", exception.getMessage());
     }
 }
 

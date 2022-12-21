@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
@@ -21,7 +22,7 @@ public class StudentService {
 
     @Transactional
     public Student insert(Student student) throws Exception {
-        if (student.getName() == null || student.getSurname() == null) {
+        if (Arrays.asList(null,"").contains(student.getName()) || Arrays.asList(null,"").contains(student.getSurname()))  {
             throw new ForbiddenInputException("Student should not be null!");
         } else {
             return this.studentRepository.save(student);
@@ -65,7 +66,7 @@ public class StudentService {
     }
 
     @Transactional
-    public Set<Student> getStudentsByCourseId(Course course) {
+    public Set<Student> getStudentsByCourse(Course course) {
         return this.studentRepository.findByCoursesRegistrationId(course.getId());
     }
 

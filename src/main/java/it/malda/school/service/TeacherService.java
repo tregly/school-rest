@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -18,7 +19,7 @@ public class TeacherService {
 
     @Transactional
     public Teacher insert(Teacher teacher) throws Exception {
-        if (teacher == null) {
+        if (Arrays.asList(null,"").contains(teacher.getName()) || Arrays.asList(null,"").contains(teacher.getSurname()))  {
             throw new ForbiddenInputException("Teacher should not be null!");
         } else {
             return this.teacherRepository.save(teacher);

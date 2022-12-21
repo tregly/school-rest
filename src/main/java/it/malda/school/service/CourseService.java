@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -46,7 +45,7 @@ public class CourseService {
         courses.forEach(x -> {
             Course course = new Course();
             BeanUtils.copyProperties(x, course);
-            Set<Student> students = this.studentService.getStudentsByCourseId(x);
+            Set<Student> students = this.studentService.getStudentsByCourse(x);
             course.setStudentRegistration(students);
             coursesResp.add(course);
         });
@@ -59,7 +58,7 @@ public class CourseService {
                 .findById(id)
                 .orElseThrow(() ->
                         new EntityNotFoundException(String.format("Course not found with id [%d]", id)));
-        Set<Student> students = this.studentService.getStudentsByCourseId(course);
+        Set<Student> students = this.studentService.getStudentsByCourse(course);
         course.setStudentRegistration(students);
         return course;
     }

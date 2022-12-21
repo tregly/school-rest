@@ -1,15 +1,18 @@
 package it.malda.school.entity;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
 import java.util.Set;
 
 @Getter
 @Setter
-@Entity
-@Table(name = "student")
+@SuperBuilder(toBuilder=true)
+@NoArgsConstructor
+@Entity(name = "student")
 public class Student {
 
     @Id
