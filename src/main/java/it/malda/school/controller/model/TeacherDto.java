@@ -22,6 +22,6 @@ public class TeacherDto implements Serializable {
     private Long id;
     private String name;
     private String surname;
-    private List<String> cousers;
+    private List<String> courses;
     private String subject;
 }

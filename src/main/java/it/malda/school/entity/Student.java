@@ -10,7 +10,7 @@ import java.util.Set;
 
 @Getter
 @Setter
-@SuperBuilder(toBuilder=true)
+@SuperBuilder(toBuilder = true)
 @NoArgsConstructor
 @Entity
 @Table(name = "student")
@@ -38,6 +38,6 @@ public class Student {
     private Set<Course> coursesRegistration;
 
     public String getFullName() {
-        return this.getName() + this.getSurname().replace(this.getName(), "");
+        return this.getName() + " " + this.getSurname().replace(this.getName(), "");
     }
 }

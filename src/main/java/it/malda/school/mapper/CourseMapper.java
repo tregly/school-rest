@@ -5,6 +5,7 @@ import it.malda.school.entity.Course;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
+
 @Mapper(componentModel = "spring")
 public interface CourseMapper extends BaseMapper<CourseDto, Course> {
     @Mapping(source = "teacher.fullName", target = "teacherName")

@@ -1,9 +1,10 @@
 package it.malda.school.controller.model;
 
-import it.malda.school.entity.Course;
 import lombok.Data;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 
 import java.io.Serializable;
 import java.util.Set;
@@ -14,6 +15,8 @@ import java.util.Set;
 @Getter
 @Setter
 @Data
+@SuperBuilder
+@NoArgsConstructor
 public class StudentDto implements Serializable {
 
     private Long id;

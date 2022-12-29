@@ -7,7 +7,6 @@ import it.malda.school.mapper.TeacherMapper;
 import it.malda.school.service.CourseService;
 import it.malda.school.service.TeacherService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,7 +16,6 @@ import java.util.stream.Collectors;
 @RestController
 @RequiredArgsConstructor
 public class TeacherController {
-
 
     private final TeacherService teacherService;
 
@@ -35,7 +33,7 @@ public class TeacherController {
         Teacher teacher = this.teacherService.getOne(id);
         List<Course> course = this.courseService.findCourseListByTeacher(teacher);
         TeacherDto teacherDto = this.teacherMapper.toDto(teacher);
-        teacherDto.setCousers(course.stream().map(Course::getName).collect(Collectors.toList()));
+        teacherDto.setCourses(course.stream().map(Course::getName).collect(Collectors.toList()));
         return teacherDto;
     }
 
@@ -58,7 +56,7 @@ public class TeacherController {
         List<Course> course = this.courseService.findCourseListByTeacher(entity);
         TeacherDto teacherDto = this.teacherMapper.toDto(this.teacherService.update(id, entity));
         //Nell'update è possibile modificare tutto tranne i corsi collegati, è possibile farlo tramite chiamate da Course
-        teacherDto.setCousers(course.stream().map(Course::getName).collect(Collectors.toList()));
+        teacherDto.setCourses(course.stream().map(Course::getName).collect(Collectors.toList()));
         return teacherDto;
     }
 }

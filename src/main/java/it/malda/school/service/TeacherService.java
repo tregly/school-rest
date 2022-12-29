@@ -5,7 +5,7 @@ import it.malda.school.exception.EntityNotFoundException;
 import it.malda.school.exception.ForbiddenInputException;
 import it.malda.school.exception.InvalidInputException;
 import it.malda.school.repo.TeacherRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -13,13 +13,14 @@ import java.util.Arrays;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class TeacherService {
-    @Autowired
-    private TeacherRepository teacherRepository;
+
+    private final TeacherRepository teacherRepository;
 
     @Transactional
     public Teacher insert(Teacher teacher) throws Exception {
-        if (Arrays.asList(null,"").contains(teacher.getName()) || Arrays.asList(null,"").contains(teacher.getSurname()))  {
+        if (Arrays.asList(null, "").contains(teacher.getName()) || Arrays.asList(null, "").contains(teacher.getSurname())) {
             throw new ForbiddenInputException("Teacher should not be null!");
         } else {
             return this.teacherRepository.save(teacher);

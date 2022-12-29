@@ -4,21 +4,16 @@ import it.malda.school.controller.model.StudentDto;
 import it.malda.school.entity.Student;
 import it.malda.school.mapper.StudentMapper;
 import it.malda.school.service.StudentService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RequestMapping("api/student")
 @RestController
+@RequiredArgsConstructor
 public class StudentController {
 
-    public StudentController(StudentService studentService, StudentMapper studentMapper) {
-        this.studentService = studentService;
-        this.studentMapper = studentMapper;
-    }
-
-    @Autowired
     private final StudentService studentService;
 
     private final StudentMapper studentMapper;

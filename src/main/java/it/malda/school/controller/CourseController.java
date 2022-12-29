@@ -7,7 +7,7 @@ import it.malda.school.exception.InvalidInputException;
 import it.malda.school.mapper.CourseMapper;
 import it.malda.school.service.CourseService;
 import it.malda.school.service.StudentService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,30 +16,20 @@ import java.util.stream.Collectors;
 
 @RequestMapping("api/course")
 @RestController
+@RequiredArgsConstructor
 public class CourseController {
 
-    public CourseController(CourseService courseService, StudentService studentService, CourseMapper courseMapper) {
-        this.courseService = courseService;
-        this.studentService = studentService;
-        this.courseMapper = courseMapper;
-    }
-
-    @Autowired
     private final CourseService courseService;
 
-    @Autowired
     private final StudentService studentService;
 
-
     private final CourseMapper courseMapper;
-
 
     @GetMapping
     public List<CourseDto> getList(@RequestParam(name = "size", defaultValue = "100") int size) throws Exception {
         List<Course> courses = this.courseService.getList(size);
         if (courses == null) return null;
         List<CourseDto> courseDtos = this.courseMapper.toDto(courses);
-        Long count = 0L;
         courseDtos.forEach(courseDto -> {
             courseDto.setNumberOfParticipants((long) courses.stream()
                     .filter(x ->

@@ -7,8 +7,8 @@ import it.malda.school.exception.EntityNotFoundException;
 import it.malda.school.exception.ForbiddenInputException;
 import it.malda.school.exception.InvalidInputException;
 import it.malda.school.repo.CourseRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -17,20 +17,14 @@ import java.util.List;
 import java.util.Set;
 
 @Service
+@RequiredArgsConstructor
 public class CourseService {
-    @Autowired
+
     private final CourseRepository courseRepository;
-    @Autowired
+
     private final TeacherService teacherService;
 
-    @Autowired
     private final StudentService studentService;
-
-    public CourseService(CourseRepository courseRepository, TeacherService teacherService, StudentService studentService) {
-        this.courseRepository = courseRepository;
-        this.teacherService = teacherService;
-        this.studentService = studentService;
-    }
 
     @Transactional
     public Course insert(Course course) throws Exception {
@@ -78,7 +72,7 @@ public class CourseService {
                 .findById(id)
                 .orElseThrow(() ->
                         new EntityNotFoundException(String.format("Course not found with id [%d]", id)));
-        if (course.getId()!=null&&!course.getId().equals(id)) {
+        if (course.getId() != null && !course.getId().equals(id)) {
             throw new InvalidInputException("Context path ID is different from course.id in JSON body");
         }
         if (this.studentService.countStudentByCourse(id) >= course.getMaxParticipants()) {
