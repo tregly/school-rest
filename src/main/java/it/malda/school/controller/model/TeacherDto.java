@@ -2,7 +2,9 @@ package it.malda.school.controller.model;
 
 import lombok.Data;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 
 import java.io.Serializable;
 import java.util.List;
@@ -13,6 +15,8 @@ import java.util.List;
 @Getter
 @Setter
 @Data
+@SuperBuilder
+@NoArgsConstructor
 public class TeacherDto implements Serializable {
 
     private Long id;

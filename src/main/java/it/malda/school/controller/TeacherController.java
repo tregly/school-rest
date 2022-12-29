@@ -6,6 +6,7 @@ import it.malda.school.entity.Teacher;
 import it.malda.school.mapper.TeacherMapper;
 import it.malda.school.service.CourseService;
 import it.malda.school.service.TeacherService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,22 +15,15 @@ import java.util.stream.Collectors;
 
 @RequestMapping("api/teacher")
 @RestController
+@RequiredArgsConstructor
 public class TeacherController {
 
-    public TeacherController(TeacherService teacherService, TeacherMapper teacherMapper, CourseService courseService) {
-        this.teacherService = teacherService;
-        this.teacherMapper = teacherMapper;
-        this.courseService = courseService;
-    }
 
-    @Autowired
     private final TeacherService teacherService;
-
 
     private final TeacherMapper teacherMapper;
 
-    @Autowired
-    private CourseService courseService;
+    private final CourseService courseService;
 
     @GetMapping
     public List<TeacherDto> getList(@RequestParam(name = "size", defaultValue = "100") int size) throws Exception {
