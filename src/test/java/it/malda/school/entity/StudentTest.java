@@ -37,7 +37,7 @@ class StudentTest {
         assertEquals("Name", actualStudent.getName());
         assertEquals("4105551212", actualStudent.getPhoneNumber());
         assertEquals("Doe", actualStudent.getSurname());
-        assertEquals("NameDoe", actualStudent.getFullName());
+        assertEquals("Name Doe", actualStudent.getFullName());
     }
 
 
