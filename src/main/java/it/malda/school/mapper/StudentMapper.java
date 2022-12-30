@@ -14,13 +14,16 @@ import java.util.Set;
 public interface StudentMapper extends BaseMapper<StudentDto, Student> {
     @Mapping(source = "coursesRegistration", target = "courses", qualifiedByName = "getCourse")
     StudentDto toDto(Student entity);
+
     Student toEntity(StudentDto dto);
+
     @Named("getCourse")
-    default Set<String> getCourse(Set<Course> courses) {
+    default Set<String> getsCourse(Set<Course> courses) {
+        if (courses == null) {
+            return null;
+        }
         Set<String> response = new HashSet<>();
-        courses.forEach(course -> {
-            response.add(course.getName());
-        });
+        courses.forEach(course -> response.add(course.getName()));
         return response;
     }
 }

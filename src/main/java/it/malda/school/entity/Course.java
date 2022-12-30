@@ -1,13 +1,17 @@
 package it.malda.school.entity;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
 import java.util.Set;
 
 @Getter
 @Setter
+@SuperBuilder(toBuilder=true)
+@NoArgsConstructor
 @Entity
 @Table(name = "course")
 public class Course {
@@ -30,3 +34,4 @@ public class Course {
     @Column(name = "max_participants", columnDefinition = "default 25")
     private Long maxParticipants;
 }
+

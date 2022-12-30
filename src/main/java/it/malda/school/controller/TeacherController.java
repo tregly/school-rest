@@ -15,12 +15,16 @@ import java.util.stream.Collectors;
 @RequestMapping("api/teacher")
 @RestController
 public class TeacherController {
-    public TeacherController(TeacherService teacherService, TeacherMapper teacherMapper) {
+
+    public TeacherController(TeacherService teacherService, TeacherMapper teacherMapper, CourseService courseService) {
         this.teacherService = teacherService;
         this.teacherMapper = teacherMapper;
+        this.courseService = courseService;
     }
+
     @Autowired
     private final TeacherService teacherService;
+
 
     private final TeacherMapper teacherMapper;
 
@@ -35,7 +39,6 @@ public class TeacherController {
     @GetMapping(path = {"/{id}"})
     public TeacherDto getOne(@PathVariable Long id) throws Exception {
         Teacher teacher = this.teacherService.getOne(id);
-        if (teacher == null) return null;
         List<Course> course = this.courseService.findCourseListByTeacher(teacher);
         TeacherDto teacherDto = this.teacherMapper.toDto(teacher);
         teacherDto.setCousers(course.stream().map(Course::getName).collect(Collectors.toList()));
@@ -56,9 +59,12 @@ public class TeacherController {
     }
 
     @PutMapping("/{id}")
-    public TeacherDto update(@PathVariable Long id, @RequestBody TeacherDto teacher) throws Exception {
+    public TeacherDto update(@PathVariable Long id, @RequestBody TeacherDto teacher) {
         Teacher entity = this.teacherMapper.toEntity(teacher);
+        List<Course> course = this.courseService.findCourseListByTeacher(entity);
         TeacherDto teacherDto = this.teacherMapper.toDto(this.teacherService.update(id, entity));
+        //Nell'update è possibile modificare tutto tranne i corsi collegati, è possibile farlo tramite chiamate da Course
+        teacherDto.setCousers(course.stream().map(Course::getName).collect(Collectors.toList()));
         return teacherDto;
     }
 }

@@ -1,13 +1,17 @@
 package it.malda.school.entity;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
 import java.util.Set;
 
 @Getter
 @Setter
+@SuperBuilder(toBuilder=true)
+@NoArgsConstructor
 @Entity
 @Table(name = "student")
 public class Student {
@@ -30,11 +34,7 @@ public class Student {
     private String phoneNumber;
 
     @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(
-            name = "courses_students",
-            joinColumns = {@JoinColumn(name = "student_id")},
-            inverseJoinColumns = @JoinColumn(name = "course_id")
-    )
+    @JoinTable(name = "courses_students", joinColumns = {@JoinColumn(name = "student_id")}, inverseJoinColumns = @JoinColumn(name = "course_id"))
     private Set<Course> coursesRegistration;
 
     public String getFullName() {
