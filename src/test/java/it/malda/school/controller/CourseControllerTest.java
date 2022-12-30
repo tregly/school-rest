@@ -1,5 +1,6 @@
 package it.malda.school.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import it.malda.school.controller.model.CourseDto;
 import it.malda.school.entity.Course;
 import it.malda.school.entity.Student;
@@ -24,6 +25,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import static it.malda.school.controller.TeacherControllerTest.asJsonString;
 import static net.bytebuddy.matcher.ElementMatchers.any;
@@ -192,11 +194,12 @@ class CourseControllerTest {
         when(courseService.update(1L, courseEntity)).thenReturn(courseEntity);
         CourseDto courseDtoResult = this.courseMapperBean.toDto(courseEntity);
         when(courseMapper.toDto((Course) ArgumentMatchers.any())).thenReturn(courseDtoResult);
+        courseDtoResult.setParticipants(courseEntity.getStudentRegistration().stream().map(Student::getFullName).collect(Collectors.toList()));
         mvc.perform(MockMvcRequestBuilders
                         .put("/api/course/1")
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(asJsonString(courseEntity))
+                        .content(asJsonString(courseDtoResult))
                 )
                 .andDo(print())
                 .andExpect(status().isOk())
@@ -235,7 +238,7 @@ class CourseControllerTest {
                         .patch("/api/course/1/assign-teacher/20")
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(asJsonString(courseEntity))
+                        .content(asJsonString(courseDto))
                 )
                 .andDo(print())
                 .andExpect(status().isOk())
@@ -249,7 +252,7 @@ class CourseControllerTest {
 
     }
 
-   /* @Test
+    @Test
     void testUnassignTeacher() throws Exception {
         Course courseEntity = Course.builder()
                 .id(1L)
@@ -266,17 +269,79 @@ class CourseControllerTest {
                         .subject("Comunicazione")
                         .build())
                 .build();
-        when(courseService.assignTeacher(1L, 20L)).thenReturn(courseEntity);
-        courseEntity.setTeacher(Teacher.builder()
-                .id(20L)
-                .name("Piano")
-                .surname("Forte")
-                .subject("Musica")
-                .build());
+        when(courseService.unassignedTeacher(1L)).thenReturn(courseEntity);
+        courseEntity.setTeacher(null);
         CourseDto courseDto = this.courseMapperBean.toDto(courseEntity);
         when(courseMapper.toDto((Course) ArgumentMatchers.any())).thenReturn(courseDto);
         mvc.perform(MockMvcRequestBuilders
                         .patch("/api/course/1/unassign-teacher")
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(asJsonString(courseDto))
+                )
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$").exists())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.id").isNotEmpty())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(1L))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.name").value("Corso di Piano"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.numberOfParticipants").value(1L))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.teacherName").isEmpty());
+    }
+
+    @Test
+    void testAssignStudent() throws Exception {
+        Course courseEntity = Course.builder()
+                .id(1L)
+                .name("Corso di Piano")
+                .maxParticipants(20L)
+                .teacher(Teacher.builder()
+                        .name("Juzo")
+                        .surname("Hatake")
+                        .subject("Comunicazione")
+                        .build())
+                .studentRegistration(Set.of(Student.builder()
+                        .id(2L)
+                        .name("Adriano")
+                        .surname("Addante")
+                        .build()))
+                .build();
+        when(courseService.assignStudent(1L, 2L)).thenReturn(courseEntity);
+        CourseDto courseDto = this.courseMapperBean.toDto(courseEntity);
+        when(courseMapper.toDto((Course) ArgumentMatchers.any())).thenReturn(courseDto);
+        mvc.perform(MockMvcRequestBuilders
+                        .patch("/api/course/1/assign-student/2")
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(asJsonString(courseDto))
+                )
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$").exists())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.id").isNotEmpty())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.participants[0]").value("Adriano Addante"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.name").value("Corso di Piano"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.numberOfParticipants").value(1L));
+    }
+
+    @Test
+    void testUnassignStudent() throws Exception {
+        Course courseEntity = Course.builder()
+                .id(1L)
+                .name("Corso di Piano")
+                .maxParticipants(20L)
+                .teacher(Teacher.builder()
+                        .name("Juzo")
+                        .surname("Hatake")
+                        .subject("Comunicazione")
+                        .build())
+                .build();
+        when(courseService.assignStudent(1L, 10L)).thenReturn(courseEntity);
+
+        CourseDto courseDto = this.courseMapperBean.toDto(courseEntity);
+        when(courseMapper.toDto((Course) ArgumentMatchers.any())).thenReturn(courseDto);
+        mvc.perform(MockMvcRequestBuilders
+                        .patch("/api/course/1/assign-student/2")
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(asJsonString(courseEntity))
@@ -288,20 +353,18 @@ class CourseControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(1L))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.name").value("Corso di Piano"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.numberOfParticipants").value(1L))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.participants[0]").value("Adriano Addante"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.teacherName").value("Piano Forte"));
-
-    }
-*/
-    @Test
-    void testAssignStudent() throws Exception {
-    }
-
-    @Test
-    void testUnassignStudent() throws Exception {
+                .andExpect(MockMvcResultMatchers.jsonPath("$.teacherName").isEmpty());
     }
 
     @Test
     void testModifyMaxParticipants() throws Exception {
+    }
+
+    public static String asJsonString(final Object obj) {
+        try {
+            return new ObjectMapper().writeValueAsString(obj);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 }

@@ -7,23 +7,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
 class StudentTest {
-    /**
-     * Methods under test:
-     *
-     * <ul>
-     *   <li>default or parameterless constructor of {@link Student}
-     *   <li>{@link Student#setAge(String)}
-     *   <li>{@link Student#setId(Long)}
-     *   <li>{@link Student#setName(String)}
-     *   <li>{@link Student#setPhoneNumber(String)}
-     *   <li>{@link Student#setSurname(String)}
-     *   <li>{@link Student#getAge()}
-     *   <li>{@link Student#getId()}
-     *   <li>{@link Student#getName()}
-     *   <li>{@link Student#getPhoneNumber()}
-     *   <li>{@link Student#getSurname()}
-     * </ul>
-     */
+
     @Test
     void testConstructor() {
         Student actualStudent = new Student();
