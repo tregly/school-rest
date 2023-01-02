@@ -1,29 +1,20 @@
 package it.malda.school.service;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import it.malda.school.entity.Course;
-import it.malda.school.entity.Student;
 import it.malda.school.entity.Teacher;
 import it.malda.school.exception.ForbiddenInputException;
 import it.malda.school.exception.InvalidInputException;
 import it.malda.school.repo.TeacherRepository;
-
-import java.util.ArrayList;
-import java.util.Optional;
-import java.util.Set;
-
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
+
+import java.util.ArrayList;
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 @ContextConfiguration(classes = {TeacherService.class})
 @SpringBootTest
@@ -34,9 +25,6 @@ class TeacherServiceTest {
     @Autowired
     private TeacherService teacherService;
 
-    /**
-     * Method under test: {@link TeacherService#insert(Teacher)}
-     */
     @Test
     void testInsert() throws Exception {
         Teacher teacher = Teacher.builder()
@@ -91,7 +79,7 @@ class TeacherServiceTest {
     }
 
     @Test
-    void testUpdate(){
+    void testUpdate() {
         Teacher teacherOld = Teacher.builder()
                 .id(123L)
                 .name("Laura")

@@ -10,11 +10,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
 class SchoolRestApplicationTests {
-	@Autowired
-	private JdbcTemplate template;
-	@Test
-	void contextLoads() {
-		assertThat(this.template.queryForObject("SELECT 'Test'",
-				String.class)).isEqualTo("Test");
-	}
+    @Autowired
+    private JdbcTemplate template;
+
+    @Test
+    void contextLoads() {
+        assertThat(this.template.queryForObject("SELECT 'Test'",
+                String.class)).isEqualTo("Test");
+    }
 }

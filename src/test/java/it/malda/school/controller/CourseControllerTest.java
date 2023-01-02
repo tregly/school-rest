@@ -13,7 +13,6 @@ import it.malda.school.service.StudentService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentMatchers;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -27,9 +26,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static it.malda.school.controller.TeacherControllerTest.asJsonString;
-import static net.bytebuddy.matcher.ElementMatchers.any;
-import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -162,13 +160,13 @@ class CourseControllerTest {
     @Test
     void testDelete() throws Exception {
         mvc.perform(MockMvcRequestBuilders
-                    .delete("/api/course/1")
-                    .accept(MediaType.APPLICATION_JSON)
-            )
-            .andDo(print())
-            .andExpect(status().isOk())
-            .andExpect(MockMvcResultMatchers.jsonPath("$").exists())
-            .andExpect(MockMvcResultMatchers.jsonPath("$").value("Deleted Course"));
+                        .delete("/api/course/1")
+                        .accept(MediaType.APPLICATION_JSON)
+                )
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$").exists())
+                .andExpect(MockMvcResultMatchers.jsonPath("$").value("Deleted Course"));
     }
 
     @Test
@@ -179,7 +177,7 @@ class CourseControllerTest {
                 .maxParticipants(25L)
                 .build();
         Course courseEntity = this.courseMapperBean.toEntity(courseDto);
-        when(courseMapper.toEntity(courseDto)).thenReturn(courseEntity);
+        when(courseMapper.toEntity((CourseDto) ArgumentMatchers.any())).thenReturn(courseEntity);
         courseEntity.setTeacher(Teacher.builder()
                 .id(2L)
                 .name("Juzo")
@@ -335,13 +333,21 @@ class CourseControllerTest {
                         .surname("Hatake")
                         .subject("Comunicazione")
                         .build())
+                .studentRegistration(Set.of(Student.builder()
+                        .id(2L)
+                        .name("Adriano")
+                        .surname("Addante")
+                        .build()))
                 .build();
-        when(courseService.assignStudent(1L, 10L)).thenReturn(courseEntity);
-
+        when(courseService.unassignedStudent(1L, 10L)).thenReturn(courseEntity);
         CourseDto courseDto = this.courseMapperBean.toDto(courseEntity);
-        when(courseMapper.toDto((Course) ArgumentMatchers.any())).thenReturn(courseDto);
+        courseDto.setParticipants(courseEntity.getStudentRegistration().stream().map(Student::getFullName).collect(Collectors.toList()));
+        when(courseMapper.toDto(courseEntity)).thenReturn(courseDto);
+        CourseDto courseDtoResult = courseDto;
+        courseDtoResult.setParticipants(null);
+        when(courseMapper.toDto((Course) ArgumentMatchers.any())).thenReturn(courseDtoResult);
         mvc.perform(MockMvcRequestBuilders
-                        .patch("/api/course/1/assign-student/2")
+                        .patch("/api/course/1/unassign-student/10")
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(asJsonString(courseEntity))
@@ -353,11 +359,63 @@ class CourseControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(1L))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.name").value("Corso di Piano"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.numberOfParticipants").value(1L))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.teacherName").isEmpty());
+                .andExpect(MockMvcResultMatchers.jsonPath("$.teacherName").value("Juzo Hatake"));
     }
 
     @Test
     void testModifyMaxParticipants() throws Exception {
+        Course courseEntity = Course.builder()
+                .id(1L)
+                .name("Corso di Meditazione")
+                .maxParticipants(20L)
+                .studentRegistration(Set.of(Student.builder()
+                        .id(2L)
+                        .name("Adriano")
+                        .surname("Addante")
+                        .build()))
+                .build();
+        when(studentService.countStudentByCourse(anyLong())).thenReturn(1L);
+        mvc.perform(MockMvcRequestBuilders
+                        .patch("/api/course/1/max-participants/25")
+                        .accept(MediaType.APPLICATION_JSON)
+                )
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$").exists())
+                .andExpect(MockMvcResultMatchers.jsonPath("$").value("Max Participants is changed to 25"));
+    }
+
+    @Test
+    public void testModifyMaxParticipantsFails_InvalidInputException() throws Exception {
+        Course courseEntity = Course.builder()
+                .id(1L)
+                .name("Corso di Meditazione")
+                .maxParticipants(20L)
+                .studentRegistration(Set.of(Student.builder()
+                                .id(2L)
+                                .name("Adriano")
+                                .surname("Addante")
+                                .build(),
+                        Student.builder()
+                                .id(3L)
+                                .name("Carlo")
+                                .surname("Solution")
+                                .build(),
+                        Student.builder()
+                                .id(4L)
+                                .name("Lorenzo")
+                                .surname("Platform")
+                                .build()))
+                .build();
+        when(studentService.countStudentByCourse(anyLong())).thenReturn(3L);
+        mvc.perform(MockMvcRequestBuilders
+                        .patch("/api/course/1/max-participants/2")
+                        .accept(MediaType.APPLICATION_JSON)
+                )
+                .andDo(print())
+                .andExpect(status().is4xxClientError())
+                .andExpect(MockMvcResultMatchers.jsonPath("$").exists())
+                .andExpect(MockMvcResultMatchers.jsonPath("$").value("Students registration have already exceeded the limit"));
     }
 
     public static String asJsonString(final Object obj) {

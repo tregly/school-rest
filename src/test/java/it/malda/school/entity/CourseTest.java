@@ -1,16 +1,16 @@
 package it.malda.school.entity;
 
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.HashSet;
 import java.util.Set;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class CourseTest {
 
     @Test
-    void testConstructor(){
+    void testConstructor() {
         Course actualCourse = new Course();
         Teacher teacher = new Teacher();
         teacher.setId(999L);
@@ -44,7 +44,6 @@ public class CourseTest {
         assertEquals("Addante", actualCourse.getStudentRegistration().iterator().next().getSurname());
         assertEquals("1234567890", actualCourse.getStudentRegistration().iterator().next().getPhoneNumber());
         assertEquals(true, actualCourse.getStudentRegistration().iterator().next().getCoursesRegistration().isEmpty());
-
 
 
     }

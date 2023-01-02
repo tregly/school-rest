@@ -7,7 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class TeacherTest {
 
     @Test
-    void testConstructor(){
+    void testConstructor() {
         Teacher actualTeacher = new Teacher();
         actualTeacher.setId(123L);
         actualTeacher.setName("Giannino");

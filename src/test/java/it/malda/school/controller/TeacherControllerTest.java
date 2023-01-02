@@ -65,7 +65,7 @@ class TeacherControllerTest {
     void testGetOne() throws Exception {
         Teacher teacher = Teacher.builder().id(1L).name("Adriano").surname("Addante").subject("Informatica").build();
         when(teacherService.getOne(anyLong())).thenReturn(teacher);
-        List<Course> courses = List.of(Course.builder().id(2L).name("Italiano").build(),Course.builder().id(3L).name("Inglese").build());
+        List<Course> courses = List.of(Course.builder().id(2L).name("Italiano").build(), Course.builder().id(3L).name("Inglese").build());
         when(courseService.findCourseListByTeacher(teacher)).thenReturn(courses);
         TeacherDto teacherDto = this.teacherMapperBean.toDto(teacher);
         when(teacherMapper.toDto(teacher)).thenReturn(teacherDto);
@@ -102,6 +102,7 @@ class TeacherControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.id").value("1"));
 
     }
+
     @Test
     void testDelete() throws Exception {
         mvc.perform(MockMvcRequestBuilders
@@ -120,9 +121,9 @@ class TeacherControllerTest {
         TeacherDto teacherDto = TeacherDto.builder().id(1L).name("Adriano").surname("Addante").subject("Informatica").build();
         Teacher teacherEntity = this.teacherMapperBean.toEntity(teacherDto);
         when(teacherMapper.toEntity((TeacherDto) any())).thenReturn(teacherEntity);
-        List<Course> courses = List.of(Course.builder().id(2L).name("Italiano").build(),Course.builder().id(3L).name("Inglese").build());
+        List<Course> courses = List.of(Course.builder().id(2L).name("Italiano").build(), Course.builder().id(3L).name("Inglese").build());
         when(courseService.findCourseListByTeacher(any())).thenReturn(courses);
-        when(teacherService.update(1L,teacherEntity)).thenReturn(teacherEntity);
+        when(teacherService.update(1L, teacherEntity)).thenReturn(teacherEntity);
         TeacherDto teacherDtoResult = this.teacherMapperBean.toDto(teacherEntity);
         when(teacherMapper.toDto(teacherEntity)).thenReturn(teacherDtoResult);
         teacherDtoResult.setCourses(courses.stream().map(Course::getName).collect(Collectors.toList()));

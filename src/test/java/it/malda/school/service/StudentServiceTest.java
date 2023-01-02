@@ -39,7 +39,7 @@ class StudentServiceTest {
                 .age("24")
                 .build();
         when(studentRepository.save((Student) any())).thenReturn(student);
-        Student saved =  studentService.insert(student);
+        Student saved = studentService.insert(student);
         verify(studentRepository).save((Student) any());
         assertSame(student, saved);
     }
@@ -107,7 +107,7 @@ class StudentServiceTest {
         when(studentRepository.findById((Long) any())).thenReturn(Optional.of(student));
         doNothing().when(studentRepository).deleteById((Long) any());
         studentService.delete(123L);
-        verify(studentRepository,times(1)).deleteById(123L);
+        verify(studentRepository, times(1)).deleteById(123L);
     }
 
     @Test
@@ -157,7 +157,7 @@ class StudentServiceTest {
                 .phoneNumber("123456789")
                 .age("24")
                 .build();
-        Throwable exception = assertThrows(InvalidInputException.class, () -> studentService.update(1L,student));
+        Throwable exception = assertThrows(InvalidInputException.class, () -> studentService.update(1L, student));
         assertEquals("Context path ID is different from student.id in JSON body", exception.getMessage());
     }
 

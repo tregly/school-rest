@@ -10,7 +10,7 @@ import java.util.Set;
 
 @Getter
 @Setter
-@SuperBuilder(toBuilder=true)
+@SuperBuilder(toBuilder = true)
 @NoArgsConstructor
 @Entity
 @Table(name = "course")

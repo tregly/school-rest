@@ -12,7 +12,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ContextConfiguration;
 
-import java.lang.reflect.Executable;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -113,7 +112,7 @@ class CourseServiceTest {
         when(courseRepository.findById(course.getId())).thenReturn(Optional.of(course));
         doNothing().when(courseRepository).deleteById((Long) any());
         courseService.delete(1234L);
-        verify(courseRepository,times(1)).deleteById(1234L);
+        verify(courseRepository, times(1)).deleteById(1234L);
     }
 
     @Test
@@ -146,6 +145,7 @@ class CourseServiceTest {
         Course update = courseService.update(1L, courseNew);
         assertSame(courseNew.getId(), update.getId());
     }
+
     @Test
     public void testUpdateFails_EntityNotFoundException() {
         Course course = Course.builder()
@@ -179,7 +179,7 @@ class CourseServiceTest {
                 .build();
         when(courseRepository.findById(course.getId())).thenReturn(Optional.of(course));
         when(studentService.countStudentByCourse(course.getId())).thenReturn(3L);
-        Throwable exception = assertThrows(InvalidInputException.class, () -> courseService.update(1L,course));
+        Throwable exception = assertThrows(InvalidInputException.class, () -> courseService.update(1L, course));
         assertEquals("The maximum number of participants is " + course.getMaxParticipants(), exception.getMessage());
     }
 
@@ -228,7 +228,7 @@ class CourseServiceTest {
         when(courseRepository.findById(course.getId())).thenReturn(Optional.of(course));
         courseService.modifyMaxParticipants(course.getId(), 50L);
         assertEquals(123L, (long) course.getId());
-        verify(courseRepository,times(1)).modifyMaxParticipants(123L,50L);
+        verify(courseRepository, times(1)).modifyMaxParticipants(123L, 50L);
     }
 
     @Test

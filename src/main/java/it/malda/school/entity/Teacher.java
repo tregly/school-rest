@@ -9,7 +9,7 @@ import javax.persistence.*;
 
 @Getter
 @Setter
-@SuperBuilder(toBuilder=true)
+@SuperBuilder(toBuilder = true)
 @NoArgsConstructor
 @Entity
 @Table(name = "teacher")
