@@ -1,7 +1,6 @@
 package it.malda.school.service;
 
 import it.malda.school.entity.Teacher;
-import it.malda.school.exception.ForbiddenInputException;
 import it.malda.school.exception.InvalidInputException;
 import it.malda.school.repo.TeacherRepository;
 import org.junit.jupiter.api.Test;
@@ -40,14 +39,14 @@ class TeacherServiceTest {
     }
 
     @Test
-    void testInsert_ForbiddenInputException() {
+    void testInsert_InvalidInputException() {
         Teacher teacher = Teacher.builder()
                 .id(123L)
                 .name("")
                 .surname(null)
                 .subject("Scienze")
                 .build();
-        Throwable exception = assertThrows(ForbiddenInputException.class, () -> teacherService.insert(teacher));
+        Throwable exception = assertThrows(InvalidInputException.class, () -> teacherService.insert(teacher));
         assertEquals("Teacher should not be null!", exception.getMessage());
     }
 

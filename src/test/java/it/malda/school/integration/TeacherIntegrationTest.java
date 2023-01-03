@@ -3,9 +3,6 @@ package it.malda.school.integration;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jayway.jsonpath.JsonPath;
 import it.malda.school.controller.model.TeacherDto;
-import org.aspectj.lang.annotation.Before;
-import org.flywaydb.core.Flyway;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,18 +29,8 @@ public class TeacherIntegrationTest {
     @Autowired
     private ObjectMapper objectMapper;
 
-    @Autowired
-    Flyway flyway;
-
-    @BeforeEach
-    public void setUp() throws Exception {
-        flyway.clean();
-        flyway.baseline();
-        flyway.migrate();
-    }
-
     @Test
-    //@Sql({"classpath:test-tables.sql"})
+    @Sql(statements = "INSERT INTO teacher(name,surname,subject) VALUES('Chester','Matthews','Economics')")
     void postSuccess() throws Exception {
         TeacherDto teacherDto = TeacherDto.builder()
                 .name("Giuseppe")
@@ -59,11 +46,27 @@ public class TeacherIntegrationTest {
                 .andReturn();
 
         Integer newlySavedId = JsonPath.read(resultPost.getResponse().getContentAsString(), "$.id");
-
         mockMvc.perform(MockMvcRequestBuilders.get("/api/teacher/" + newlySavedId))
                 .andExpect(status().isOk())
                 .andDo(print())
                 .andExpect(jsonPath("$.id").value(String.valueOf(newlySavedId)))
                 .andExpect(jsonPath("$.surname").value("Maldarelli"));
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/teacher/"))
+                .andExpect(status().isOk())
+                .andDo(print());
+    }
+
+    @Test
+    @Sql(statements = "INSERT INTO teacher(name,surname,subject) VALUES('Chester','Matthews','Economics')")
+    void postFails() throws Exception {
+        TeacherDto teacherDto = TeacherDto.builder()
+                .build();
+        MvcResult resultPost = mockMvc.perform(MockMvcRequestBuilders.post("/api/teacher")
+                        .contentType("application/json")
+                        .content(objectMapper.writeValueAsString(teacherDto)))
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+                .andReturn();
+
     }
 }

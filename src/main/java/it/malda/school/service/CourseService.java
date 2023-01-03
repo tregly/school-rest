@@ -4,7 +4,6 @@ import it.malda.school.entity.Course;
 import it.malda.school.entity.Student;
 import it.malda.school.entity.Teacher;
 import it.malda.school.exception.EntityNotFoundException;
-import it.malda.school.exception.ForbiddenInputException;
 import it.malda.school.exception.InvalidInputException;
 import it.malda.school.repo.CourseRepository;
 import lombok.RequiredArgsConstructor;
@@ -28,7 +27,7 @@ public class CourseService {
 
     @Transactional
     public Course insert(Course course) throws Exception {
-        if (course == null) throw new ForbiddenInputException("Course should not be null!");
+        if (course == null) throw new InvalidInputException("Course should not be null!");
         return this.courseRepository.save(course);
     }
 

@@ -4,7 +4,6 @@ import it.malda.school.entity.Course;
 import it.malda.school.entity.Student;
 import it.malda.school.entity.Teacher;
 import it.malda.school.exception.EntityNotFoundException;
-import it.malda.school.exception.ForbiddenInputException;
 import it.malda.school.exception.InvalidInputException;
 import it.malda.school.repo.StudentRepository;
 import org.junit.jupiter.api.Test;
@@ -45,7 +44,7 @@ class StudentServiceTest {
     }
 
     @Test
-    public void testInsert_ForbiddenInputException() {
+    public void testInsert_InvalidInputException() {
         Student student = Student.builder()
                 .id(123L)
                 .name(null)
@@ -54,7 +53,7 @@ class StudentServiceTest {
                 .age("24")
                 .build();
         when(studentRepository.save((Student) any())).thenReturn(student);
-        Throwable exception = assertThrows(ForbiddenInputException.class, () -> studentService.insert(student));
+        Throwable exception = assertThrows(InvalidInputException.class, () -> studentService.insert(student));
         assertEquals("Student should not be null!", exception.getMessage());
     }
 

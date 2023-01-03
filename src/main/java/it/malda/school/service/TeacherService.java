@@ -2,7 +2,6 @@ package it.malda.school.service;
 
 import it.malda.school.entity.Teacher;
 import it.malda.school.exception.EntityNotFoundException;
-import it.malda.school.exception.ForbiddenInputException;
 import it.malda.school.exception.InvalidInputException;
 import it.malda.school.repo.TeacherRepository;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +20,7 @@ public class TeacherService {
     @Transactional
     public Teacher insert(Teacher teacher) throws Exception {
         if (Arrays.asList(null, "").contains(teacher.getName()) || Arrays.asList(null, "").contains(teacher.getSurname())) {
-            throw new ForbiddenInputException("Teacher should not be null!");
+            throw new InvalidInputException("Teacher should not be null!");
         } else {
             return this.teacherRepository.save(teacher);
         }

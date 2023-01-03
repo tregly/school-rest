@@ -1,1 +1,1 @@
-SELECT * FROM student;
+INSERT INTO teacher(name,surname,subject) VALUES('Chester','Matthews','Economics');
