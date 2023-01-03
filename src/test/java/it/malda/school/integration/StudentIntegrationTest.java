@@ -57,7 +57,7 @@ public class StudentIntegrationTest {
     @Test
     @Sql(statements = "INSERT INTO student(name,surname,age,phone_number) VALUES ('Jacob','Jacob Graham',33,'3-508-718-0571');")
     void deleteSuccess() throws Exception {
-        MvcResult resultPost = mockMvc.perform(MockMvcRequestBuilders.delete("/api/student/1")
+        mockMvc.perform(MockMvcRequestBuilders.delete("/api/student/1")
                         .contentType("application/json"))
                 .andDo(print())
                 .andExpect(status().isOk())
@@ -82,7 +82,7 @@ public class StudentIntegrationTest {
                 .age("24")
                 .build();
 
-        MvcResult resultPost = mockMvc.perform(MockMvcRequestBuilders.put("/api/student/10")
+        mockMvc.perform(MockMvcRequestBuilders.put("/api/student/10")
                         .contentType("application/json")
                         .content(objectMapper.writeValueAsString(studentDto)))
                 .andDo(print())
@@ -90,11 +90,6 @@ public class StudentIntegrationTest {
                 .andExpect(jsonPath("$.name").value("Adriano"))
                 .andExpect(jsonPath("$.phoneNumber").isEmpty())
                 .andReturn();
-
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/student/10"))
-                .andExpect(status().isOk())
-                .andDo(print())
-                .andExpect(jsonPath("$.id").value(10L));
     }
 
     @Test
@@ -107,6 +102,14 @@ public class StudentIntegrationTest {
                 .andDo(print())
                 .andExpect(MockMvcResultMatchers.jsonPath("$").exists())
                 .andExpect(MockMvcResultMatchers.jsonPath("$[*].id").isNotEmpty());
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/student/20"))
+                .andExpect(status().isOk())
+                .andDo(print())
+                .andExpect(jsonPath("$.id").value(20L))
+                .andExpect(jsonPath("$.name").value("Laura"))
+                .andExpect(jsonPath("$.surname").value("Non c'è"))
+                .andExpect(jsonPath("$.age").value("33"));
     }
 }
 
