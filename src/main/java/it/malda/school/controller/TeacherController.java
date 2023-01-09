@@ -24,12 +24,12 @@ public class TeacherController {
     private final CourseService courseService;
 
     @GetMapping
-    public List<TeacherDto> getList(@RequestParam(name = "size", defaultValue = "100") int size) throws Exception {
+    public List<TeacherDto> getList(@RequestParam(name = "size", defaultValue = "100") int size){
         return teacherMapper.toDto(this.teacherService.getList(size));
     }
 
     @GetMapping(path = {"/{id}"})
-    public TeacherDto getOne(@PathVariable Long id) throws Exception {
+    public TeacherDto getOne(@PathVariable Long id){
         Teacher teacher = this.teacherService.getOne(id);
         List<Course> course = this.courseService.findCourseListByTeacher(teacher);
         TeacherDto teacherDto = this.teacherMapper.toDto(teacher);
@@ -38,14 +38,13 @@ public class TeacherController {
     }
 
     @PostMapping
-    public TeacherDto insert(@RequestBody TeacherDto teacher) throws Exception {
+    public TeacherDto insert(@RequestBody TeacherDto teacher){
         Teacher entity = this.teacherMapper.toEntity(teacher);
-        TeacherDto teacherDto = this.teacherMapper.toDto(this.teacherService.insert(entity));
-        return teacherDto;
+        return this.teacherMapper.toDto(this.teacherService.insert(entity));
     }
 
     @DeleteMapping(path = {"/{id}"})
-    public String delete(@PathVariable Long id) throws Exception {
+    public String delete(@PathVariable Long id){
         this.teacherService.delete(id);
         return "Deleted Teacher";
     }

@@ -25,8 +25,9 @@ public class CourseService {
 
     private final StudentService studentService;
 
+    public static final String ENTITY_NOT_FOUND_EXCEPTION = "Course not found with id [%d]";
     @Transactional
-    public Course insert(Course course) throws Exception {
+    public Course insert(Course course) {
         if (course == null) throw new InvalidInputException("Course should not be null!");
         return this.courseRepository.save(course);
     }
@@ -50,7 +51,7 @@ public class CourseService {
         Course course = this.courseRepository
                 .findById(id)
                 .orElseThrow(() ->
-                        new EntityNotFoundException(String.format("Course not found with id [%d]", id)));
+                        new EntityNotFoundException(String.format(ENTITY_NOT_FOUND_EXCEPTION, id)));
         Set<Student> students = this.studentService.getStudentsByCourse(course);
         course.setStudentRegistration(students);
         return course;
@@ -58,11 +59,11 @@ public class CourseService {
 
     @Transactional
     public void delete(Long id) {
-        this.courseRepository
+        Course course = this.courseRepository
                 .findById(id)
                 .orElseThrow(() ->
-                        new EntityNotFoundException(String.format("Course not found with id [%d]", id)));
-        this.courseRepository.deleteById(id);
+                        new EntityNotFoundException(String.format(ENTITY_NOT_FOUND_EXCEPTION, id)));
+        this.courseRepository.delete(course);
     }
 
     @Transactional
@@ -70,7 +71,7 @@ public class CourseService {
         Course oldCourse = this.courseRepository
                 .findById(id)
                 .orElseThrow(() ->
-                        new EntityNotFoundException(String.format("Course not found with id [%d]", id)));
+                        new EntityNotFoundException(String.format(ENTITY_NOT_FOUND_EXCEPTION, id)));
         if (course.getId() != null && !course.getId().equals(id)) {
             throw new InvalidInputException("Context path ID is different from course.id in JSON body");
         }
@@ -105,11 +106,11 @@ public class CourseService {
 
     @Transactional
     public void modifyMaxParticipants(Long id, Long limit) {
-        this.courseRepository
+        Course course = this.courseRepository
                 .findById(id)
                 .orElseThrow(() ->
-                        new EntityNotFoundException(String.format("Course not found with id [%d]", id)));
-        this.courseRepository.modifyMaxParticipants(id, limit);
+                        new EntityNotFoundException(String.format(ENTITY_NOT_FOUND_EXCEPTION, id)));
+        this.courseRepository.modifyMaxParticipants(course.getId(), limit);
     }
 
 

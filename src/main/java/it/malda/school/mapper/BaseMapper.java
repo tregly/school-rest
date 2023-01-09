@@ -10,17 +10,17 @@ abstract interface BaseMapper<D, E> {
 
     default List<D> toDto(List<E> entities) {
         List<D> dtos = new ArrayList<>();
-        entities.forEach(x -> {
-            dtos.add(this.toDto(x));
-        });
+        entities.forEach(x ->
+            dtos.add(this.toDto(x))
+        );
         return dtos;
     }
 
     default List<E> toEntity(List<D> dtos) {
         List<E> entities = new ArrayList<>();
-        dtos.forEach(x -> {
-            entities.add(this.toEntity(x));
-        });
+        dtos.forEach(x ->
+            entities.add(this.toEntity(x))
+        );
         return entities;
     }
 }

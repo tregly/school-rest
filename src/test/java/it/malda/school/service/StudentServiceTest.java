@@ -44,7 +44,7 @@ class StudentServiceTest {
     }
 
     @Test
-    public void testInsert_InvalidInputException() {
+    void testInsert_InvalidInputException() {
         Student student = Student.builder()
                 .id(123L)
                 .name(null)
@@ -106,7 +106,7 @@ class StudentServiceTest {
         when(studentRepository.findById((Long) any())).thenReturn(Optional.of(student));
         doNothing().when(studentRepository).deleteById((Long) any());
         studentService.delete(123L);
-        verify(studentRepository, times(1)).deleteById(123L);
+        verify(studentRepository, times(1)).delete(student);
     }
 
     @Test
@@ -148,7 +148,7 @@ class StudentServiceTest {
     }
 
     @Test
-    public void testUpdateFails_InvalidInputException() {
+    void testUpdateFails_InvalidInputException() {
         Student student = Student.builder()
                 .id(123L)
                 .name("Adriano")

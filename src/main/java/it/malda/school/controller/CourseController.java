@@ -7,6 +7,7 @@ import it.malda.school.exception.InvalidInputException;
 import it.malda.school.mapper.CourseMapper;
 import it.malda.school.service.CourseService;
 import it.malda.school.service.StudentService;
+import java.util.Collections;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,37 +27,35 @@ public class CourseController {
     private final CourseMapper courseMapper;
 
     @GetMapping
-    public List<CourseDto> getList(@RequestParam(name = "size", defaultValue = "100") int size) throws Exception {
+    public List<CourseDto> getList(@RequestParam(name = "size", defaultValue = "100") int size) {
         List<Course> courses = this.courseService.getList(size);
-        if (courses == null) return null;
+        if (courses == null) return Collections.emptyList();
         List<CourseDto> courseDtos = this.courseMapper.toDto(courses);
-        courseDtos.forEach(courseDto -> {
-            courseDto.setNumberOfParticipants((long) courses.stream()
-                    .filter(x ->
-                            courseDto.getId() == x.getId()
-                    )
-                    .findFirst()
-                    .get()
-                    .getStudentRegistration()
-                    .size()
-            );
-        });
+        courseDtos.forEach(courseDto -> courseDto.setNumberOfParticipants((long) courses.stream()
+                .filter(x ->
+                        courseDto.getId().equals(x.getId())
+                )
+                .findFirst()
+                .get()
+                .getStudentRegistration()
+                .size()
+        ));
 
         return courseDtos;
     }
 
     @GetMapping(path = {"/{id}"})
-    public CourseDto getOne(@PathVariable Long id) throws Exception {
+    public CourseDto getOne(@PathVariable Long id) throws NullPointerException{
         return getCourseDto(this.courseService.getOne(id));
     }
 
     @PostMapping
-    public CourseDto insert(@RequestBody CourseDto course) throws Exception {
+    public CourseDto insert(@RequestBody CourseDto course){
         return this.courseMapper.toDto(this.courseService.insert(this.courseMapper.toEntity(course)));
     }
 
     @DeleteMapping(path = {"/{id}"})
-    public String delete(@PathVariable Long id) throws Exception {
+    public String delete(@PathVariable Long id){
         this.courseService.delete(id);
         return "Deleted Course";
     }

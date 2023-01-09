@@ -21,7 +21,7 @@ public class StudentService {
 
 
     @Transactional
-    public Student insert(Student student) throws Exception {
+    public Student insert(Student student){
         if (Arrays.asList(null, "").contains(student.getName()) || Arrays.asList(null, "").contains(student.getSurname())) {
             throw new InvalidInputException("Student should not be null!");
         } else {
@@ -43,12 +43,12 @@ public class StudentService {
     }
 
     @Transactional
-    public void delete(Long id) throws Exception {
-        this.studentRepository
+    public void delete(Long id){
+        Student student = this.studentRepository
                 .findById(id)
                 .orElseThrow(() ->
                         new EntityNotFoundException(String.format("Student not found with id [%d]", id)));
-        this.studentRepository.deleteById(id);
+        this.studentRepository.delete(student);
     }
 
     @Transactional

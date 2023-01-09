@@ -386,7 +386,7 @@ class CourseControllerTest {
     }
 
     @Test
-    public void testModifyMaxParticipantsFails_InvalidInputException() throws Exception {
+    void testModifyMaxParticipantsFails_InvalidInputException() throws Exception {
         Course courseEntity = Course.builder()
                 .id(1L)
                 .name("Corso di Meditazione")

@@ -71,9 +71,9 @@ class CourseServiceTest {
         when(studentService.getStudentsByCourse((Course) any())).thenReturn(students);
         when(courseRepository.findAll()).thenReturn(List.of(course));
         List<Course> courses = courseService.getList(100);
-        assertTrue(courses.size() == 1);
-        assertTrue(courses.get(0).getStudentRegistration().size() == 1);
-        assertTrue(courses.get(0).getStudentRegistration().stream().collect(Collectors.toList()).get(0).getId() == students.stream().collect(Collectors.toList()).get(0).getId());
+        assertEquals(1, courses.size());
+        assertEquals(1, courses.get(0).getStudentRegistration().size());
+        assertSame(courses.get(0).getStudentRegistration().stream().findFirst().get().getId(), students.stream().findFirst().get().getId());
         verify(courseRepository).findAll();
     }
 
@@ -89,15 +89,15 @@ class CourseServiceTest {
         when(studentService.getStudentsByCourse((Course) any())).thenReturn(Set.of(Student.builder().id(1L).build()));
         when(courseRepository.findById(course.getId())).thenReturn(Optional.of(course));
         Course one = courseService.getOne(course.getId());
-        assertTrue(one.getId() == course.getId());
-        assertTrue(one.getStudentRegistration().stream().findFirst().get().getId() == course.getStudentRegistration().stream().findFirst().get().getId());
+        assertSame(one.getId(), course.getId());
+        assertSame(one.getStudentRegistration().stream().findFirst().get().getId(), course.getStudentRegistration().stream().findFirst().get().getId());
         verify(courseRepository).findById((Long) any());
     }
 
     @Test
-    public void testGetOneFails_EntityNotFoundException() {
-        when(courseRepository.findById(1l)).thenReturn(Optional.empty());
-        Throwable exception = assertThrows(EntityNotFoundException.class, () -> courseService.getOne(1l));
+    void testGetOneFails_EntityNotFoundException() {
+        when(courseRepository.findById(1L)).thenReturn(Optional.empty());
+        Throwable exception = assertThrows(EntityNotFoundException.class, () -> courseService.getOne(1L));
         assertEquals("Course not found with id [1]", exception.getMessage());
     }
 
@@ -112,11 +112,11 @@ class CourseServiceTest {
         when(courseRepository.findById(course.getId())).thenReturn(Optional.of(course));
         doNothing().when(courseRepository).deleteById((Long) any());
         courseService.delete(1234L);
-        verify(courseRepository, times(1)).deleteById(1234L);
+        verify(courseRepository, times(1)).delete(course);
     }
 
     @Test
-    public void testDeleteFails_EntityNotFoundException() {
+    void testDeleteFails_EntityNotFoundException() {
         when(courseRepository.findById(1l)).thenReturn(Optional.empty());
         Throwable exception = assertThrows(EntityNotFoundException.class, () -> courseService.delete(1l));
         assertEquals("Course not found with id [1]", exception.getMessage());
@@ -147,7 +147,7 @@ class CourseServiceTest {
     }
 
     @Test
-    public void testUpdateFails_EntityNotFoundException() {
+    void testUpdateFails_EntityNotFoundException() {
         Course course = Course.builder()
                 .id(1L)
                 .build();
@@ -156,7 +156,7 @@ class CourseServiceTest {
     }
 
     @Test
-    public void testUpdateFails_InvalidInputException() {
+    void testUpdateFails_InvalidInputException() {
         Course course = Course.builder()
                 .id(2L)
                 .build();
@@ -167,7 +167,7 @@ class CourseServiceTest {
 
 
     @Test
-    public void testUpdateFails_InvalidInputException2() {
+    void testUpdateFails_InvalidInputException2() {
         Course course = Course.builder()
                 .id(1L)
                 .name("Corso di Ballo")
@@ -189,7 +189,7 @@ class CourseServiceTest {
         Teacher teacher = Teacher.builder().id(2L).build();
         when(courseRepository.findByTeacherId(teacher.getId())).thenReturn(List.of(Course.builder().id(1L).build()));
         List<Course> courses = courseService.findCourseListByTeacher(teacher);
-        assertTrue(courses.get(0).getId() == 1L);
+        assertSame(1L,courses.get(0).getId());
     }
 
     @Test
@@ -232,7 +232,7 @@ class CourseServiceTest {
     }
 
     @Test
-    public void testModifyMaxParticipantsFails_EntityNotFoundException() {
+    void testModifyMaxParticipantsFails_EntityNotFoundException() {
         Course course = Course.builder()
                 .id(1L)
                 .build();
@@ -261,7 +261,7 @@ class CourseServiceTest {
     }
 
     @Test
-    public void testAssignStudentFails_EntityNotFoundException() {
+    void testAssignStudentFails_EntityNotFoundException() {
         Course course = Course.builder()
                 .id(1L)
                 .maxParticipants(3L)

@@ -18,7 +18,7 @@ public class TeacherService {
     private final TeacherRepository teacherRepository;
 
     @Transactional
-    public Teacher insert(Teacher teacher) throws Exception {
+    public Teacher insert(Teacher teacher){
         if (Arrays.asList(null, "").contains(teacher.getName()) || Arrays.asList(null, "").contains(teacher.getSurname())) {
             throw new InvalidInputException("Teacher should not be null!");
         } else {
@@ -37,7 +37,7 @@ public class TeacherService {
     }
 
     @Transactional
-    public void delete(Long id) throws Exception {
+    public void delete(Long id){
         this.teacherRepository.deleteById(id);
     }
 

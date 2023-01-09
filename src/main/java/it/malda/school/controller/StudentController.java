@@ -19,26 +19,24 @@ public class StudentController {
     private final StudentMapper studentMapper;
 
     @GetMapping
-    public List<StudentDto> getList(@RequestParam(name = "size", defaultValue = "100") int size) throws Exception {
+    public List<StudentDto> getList(@RequestParam(name = "size", defaultValue = "100") int size){
         return studentMapper.toDto(this.studentService.getList(size));
     }
 
     @GetMapping(path = {"/{id}"})
-    public StudentDto getOne(@PathVariable Long id) throws Exception {
+    public StudentDto getOne(@PathVariable Long id){
         Student student = this.studentService.getOne(id);
-        StudentDto studentDto = this.studentMapper.toDto(student);
-        return studentDto;
+        return this.studentMapper.toDto(student);
     }
 
     @PostMapping
-    public StudentDto insert(@RequestBody StudentDto student) throws Exception {
+    public StudentDto insert(@RequestBody StudentDto student){
         Student entity = this.studentMapper.toEntity(student);
-        StudentDto studentDto = this.studentMapper.toDto(this.studentService.insert(entity));
-        return studentDto;
+        return this.studentMapper.toDto(this.studentService.insert(entity));
     }
 
     @DeleteMapping(path = {"/{id}"})
-    public String delete(@PathVariable Long id) throws Exception {
+    public String delete(@PathVariable Long id){
         this.studentService.delete(id);
         return "Deleted Student";
     }
@@ -46,7 +44,6 @@ public class StudentController {
     @PutMapping("/{id}")
     public StudentDto update(@PathVariable Long id, @RequestBody StudentDto student) {
         Student entity = this.studentMapper.toEntity(student);
-        StudentDto studentDto = this.studentMapper.toDto(this.studentService.update(id, entity));
-        return studentDto;
+        return this.studentMapper.toDto(this.studentService.update(id, entity));
     }
 }

@@ -3,6 +3,7 @@ package it.malda.school.mapper;
 import it.malda.school.controller.model.StudentDto;
 import it.malda.school.entity.Course;
 import it.malda.school.entity.Student;
+import java.util.Collections;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
@@ -20,7 +21,7 @@ public interface StudentMapper extends BaseMapper<StudentDto, Student> {
     @Named("getCourse")
     default Set<String> getsCourse(Set<Course> courses) {
         if (courses == null) {
-            return null;
+            return Collections.emptySet();
         }
         Set<String> response = new HashSet<>();
         courses.forEach(course -> response.add(course.getName()));
